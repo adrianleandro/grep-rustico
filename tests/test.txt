@@ -1,0 +1,13 @@
+ab.cd
+ab.*cd
+a[bc]d
+ab{2,4}cd
+abc|de+f
+la [aeiou] es una vocal
+la ^[aeiou] no es una vocal
+hola [[:alpha:]]+
+[[:digit:]] es un numero
+el caracter [[:alnum:]] no es un simbolo
+hola[[:space:]]mundo
+[[:upper:]]ascal[[:upper:]]ase
+es el fin$
