@@ -1,4 +1,5 @@
 use std::env::args as argv;
+mod egrep;
 fn main() {
     let args: Vec<String> = argv().collect();
     
@@ -9,7 +10,11 @@ fn main() {
         return;
     }
 
-    //let archivo = abrir_archivo(args.get(2));
-    //egrep(args.get(1), archivo);
+    match egrep::egrep(&args[1], &args[2]){
+        Ok(()) => {},
+        Err(e) => {
+            eprint!("{e}");
+        }
+    }
     return;
 }
