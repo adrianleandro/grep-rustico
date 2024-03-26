@@ -10,8 +10,8 @@ fn main() {
         return;
     }
 
-    match egrep::egrep(&args[1], &args[2]){
-        Ok(()) => {},
+    match egrep::buscar(&args[1], &args[2]){
+        Ok(ocurrencias) => {},
         Err(e) => {
             eprint!("{e}");
         }

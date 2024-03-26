@@ -1,7 +1,6 @@
+
 #[cfg(test)]
 mod tests{
-    //use super::*;
-
     #[test]
     fn period(){
         assert_eq!(".", ".");

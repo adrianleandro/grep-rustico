@@ -1,13 +1,14 @@
-ab.cd
-ab.*cd
-a[bc]d
-ab{2,4}cd
-abc|de+f
-la [aeiou] es una vocal
-la ^[aeiou] no es una vocal
-hola [[:alpha:]]+
-[[:digit:]] es un numero
-el caracter [[:alnum:]] no es un simbolo
-hola[[:space:]]mundo
-[[:upper:]]ascal[[:upper:]]ase
-es el fin$
+si la v fuese la tercer letra del abecedario el mismo empezaria así: abvcd.
+si hubiesen muchos números entre la b y la c el abecedario empezaría así: ab12344444cd.
+si no existiese la c el abecedario empezaria asi: abd.
+la b podria repetirse de 2 a 4 veces abbbcd.
+ejemplo de abc|deeeeeeef.
+de todas las letras del abecedario la a es una vocal y además la primera
+existen muchas vocales pero la h no es una vocal si no que una consonante
+hola321 mundo
+el 8 es un numero divisible por 2
+el caracter 1 no es un simbolo si no que es un número
+en un proyecto nuevo de rust se genera un programa que imprime hola mundo por la pantalla principal
+en un proyecto nuevo de rust se genera un programa que imprime hola4mundo por la pantalla principal
+PascalCase
+es el fin
