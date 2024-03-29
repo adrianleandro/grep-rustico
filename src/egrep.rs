@@ -1,5 +1,4 @@
-mod archivo;
-
+mod regex;
 const COLOR_ROJO: &str = "\x1b[31m";
 const COLOR_STD: &str = "\x1b[0m";
 
@@ -11,6 +10,8 @@ pub fn buscar(regex: &String, archivo: &String) -> Result<Vec<String>, String>{
    //regex_esta_en_linea(&regex, linea)         |
    //si el filtro da some printear la linea     |
    //pasar a siguiente linea --------------------
+   ocurrencias.push("hola".to_owned());
+   resaltar(&ocurrencias[0], &"hola que tal".to_owned());
    Ok(ocurrencias)
 }
 

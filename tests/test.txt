@@ -1,6 +1,6 @@
-si la v fuese la tercer letra del abecedario el mismo empezaria así: abvcd.
-si hubiesen muchos números entre la b y la c el abecedario empezaría así: ab12344444cd.
-si no existiese la c el abecedario empezaria asi: abd.
+se prueba el patrón de punto: abvcd.
+se prueba el patron con punto y asterisco: de44444fg.
+se prueba la eleccion entre la b o la c: abd.
 la b podria repetirse de 2 a 4 veces abbbcd.
 ejemplo de abc|deeeeeeef.
 de todas las letras del abecedario la a es una vocal y además la primera
@@ -10,5 +10,5 @@ el 8 es un numero divisible por 2
 el caracter 1 no es un simbolo si no que es un número
 en un proyecto nuevo de rust se genera un programa que imprime hola mundo por la pantalla principal
 en un proyecto nuevo de rust se genera un programa que imprime hola4mundo por la pantalla principal
-PascalCase
+La notación PascalCase combina las palabras directamente
 es el fin
