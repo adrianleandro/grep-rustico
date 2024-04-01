@@ -1,14 +1,14 @@
-se prueba el patrón de punto: abvcd.
+se prueba el patron de punto: abvcd.
 se prueba el patron con punto y asterisco: de44444fg.
 se prueba la eleccion entre la b o la c: abd.
 la b podria repetirse de 2 a 4 veces abbbcd.
 ejemplo de abc|deeeeeeef.
-de todas las letras del abecedario la a es una vocal y además la primera
+de todas las letras del abecedario la a es una vocal y ademas la primera
 existen muchas vocales pero la h no es una vocal si no que una consonante
 hola321 mundo
 el 8 es un numero divisible por 2
-el caracter 1 no es un simbolo si no que es un número
+el caracter 1 no es un simbolo si no que es un numero
 en un proyecto nuevo de rust se genera un programa que imprime hola mundo por la pantalla principal
 en un proyecto nuevo de rust se genera un programa que imprime hola4mundo por la pantalla principal
-La notación PascalCase combina las palabras directamente
+La notacion PascalCase combina las palabras directamente
 es el fin

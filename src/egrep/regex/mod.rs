@@ -7,7 +7,7 @@ mod regex_rep;
 mod regex_step;
 mod regex_value;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Regex {
     steps: Vec<regex_step::RegexStep>,
 }
@@ -51,12 +51,12 @@ impl Regex {
         Ok(Regex { steps })
     }
 
-    pub fn test(self, value: &str) -> Result<bool, &str> {
+    pub fn test(&self, value: &str) -> Result<bool, &str> {
         if !value.is_ascii() {
             return Err("el input no es ASCII");
         }
 
-        let mut queue = VecDeque::from(self.steps);
+        let mut queue: VecDeque<RegexStep> = VecDeque::from(self.steps.clone());
         let mut index = 0;
 
         while let Some(step) = queue.pop_front() {
@@ -64,9 +64,8 @@ impl Regex {
                 RegexRep::Exact(n) => {
                     for _ in [1..*n] {
                         let size = step.get_value().matches(&value[index..]);
-
+                        
                         if size == 0 {
-                            // bakctracking?
                             return Ok(false);
                         }
 

@@ -10,8 +10,7 @@ mod regex;
 const COLOR_ROJO: &str = "\x1b[31m";
 const COLOR_STD: &str = "\x1b[0m";
 
-pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a str> {
-    let mut ocurrencias: Vec<String> = Vec::new();
+pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<(), &'a str> {
     let expresion_regular_wrapped: Result<regex::Regex, &str> = regex::Regex::new(&reg_ex);
     //si el archivo no existe devolver err(el archivo no existe to owned)
     //por cada linea del archivo leerla <---------
@@ -31,24 +30,26 @@ pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a 
         Ok(file) => file,
     };
 
-    // Read the file contents into a string, returns `io::Result<usize>`
-    let mut s = String::new();
-    match file.read_to_string(&mut s) {
-        Err(_) => return Err("Error al leer el archivo"),
-        Ok(_) => (),
+    let mut contenido = String::new();
+    if let Err(_) = file.read_to_string(&mut contenido) {
+        return Err("Error al leer el archivo");
     };
 
-    let mut cursor = io::Cursor::new(s);
-    let mut buf = String::new();
+    let mut cursor = io::Cursor::new(contenido);
+    let mut linea_actual = String::new();
 
     loop {
-        match cursor.read_line(&mut buf) {
+        match cursor.read_line(&mut linea_actual) {
             Ok(0) => {
-                return Ok(ocurrencias);
+                return Ok(());
             }
             Ok(_) => {
-                print!("{buf}");
-                buf.clear()
+                match &expresion_regular.test(&linea_actual){
+                    Ok(true) => {println!("matcheado")},
+                    Ok(false) => (),
+                    Err(e) => println!("{e}"),
+                }
+                linea_actual.clear()
             }
             Err(_) => {
                 return Err("Error al leer el archivo");

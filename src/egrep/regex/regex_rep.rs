@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum RegexRep {
     Any,
     Exact(usize), //{n}
