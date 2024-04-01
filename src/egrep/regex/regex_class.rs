@@ -1,4 +1,2 @@
 #[derive(Debug)]
-pub enum RegexClass{
-
-}
+pub enum RegexClass {}

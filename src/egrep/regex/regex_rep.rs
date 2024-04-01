@@ -1,9 +1,9 @@
 #[derive(Debug)]
-pub enum RegexRep{
+pub enum RegexRep {
     Any,
     Exact(usize), //{n}
-    Range{
+    Range {
         min: Option<usize>,
         max: Option<usize>,
-    }
+    },
 }

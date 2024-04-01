@@ -1,23 +1,25 @@
 #![allow(dead_code)]
 use core::arch;
-use std::{fs::File, io::{self, BufRead, Read}, path::{Path, PathBuf}};
+use std::{
+    fs::File,
+    io::{self, BufRead, Read},
+    path::{Path, PathBuf},
+};
 mod regex;
 
 const COLOR_ROJO: &str = "\x1b[31m";
 const COLOR_STD: &str = "\x1b[0m";
 
-pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a str>{
-   let mut ocurrencias: Vec<String> = Vec::new();
-   let expresion_regular_wrapped: Result<regex::Regex, &str> = regex::Regex::new(&reg_ex); 
-   //si el archivo no existe devolver err(el archivo no existe to owned)
-   //por cada linea del archivo leerla <---------
-   //regex_esta_en_linea(&regex, linea)         |
-   //si el filtro da some printear la linea     |
-   //pasar a siguiente linea --------------------
-    let expresion_regular = match expresion_regular_wrapped{
-        Ok(expresion_regular) => {
-            expresion_regular
-        },
+pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a str> {
+    let mut ocurrencias: Vec<String> = Vec::new();
+    let expresion_regular_wrapped: Result<regex::Regex, &str> = regex::Regex::new(&reg_ex);
+    //si el archivo no existe devolver err(el archivo no existe to owned)
+    //por cada linea del archivo leerla <---------
+    //regex_esta_en_linea(&regex, linea)         |
+    //si el filtro da some printear la linea     |
+    //pasar a siguiente linea --------------------
+    let expresion_regular = match expresion_regular_wrapped {
+        Ok(expresion_regular) => expresion_regular,
         Err(e) => {
             return Err(e);
         }
@@ -38,7 +40,7 @@ pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a 
 
     let mut cursor = io::Cursor::new(s);
     let mut buf = String::new();
-    
+
     loop {
         match cursor.read_line(&mut buf) {
             Ok(0) => {
@@ -56,5 +58,12 @@ pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a 
 }
 
 fn resaltar(inicio_match: usize, fin_match: usize, linea: &String) {
-    println!("{}{}{}{}{}", &linea[..inicio_match], COLOR_ROJO, &linea[inicio_match..(inicio_match + fin_match)], COLOR_STD, &linea[(inicio_match + fin_match)..]);
+    println!(
+        "{}{}{}{}{}",
+        &linea[..inicio_match],
+        COLOR_ROJO,
+        &linea[inicio_match..(inicio_match + fin_match)],
+        COLOR_STD,
+        &linea[(inicio_match + fin_match)..]
+    );
 }
