@@ -7,6 +7,7 @@ mod regex_rep;
 mod regex_step;
 mod regex_value;
 
+#[derive(Debug)]
 pub struct Regex {
     steps: Vec<regex_step::RegexStep>
 }
@@ -20,10 +21,10 @@ impl Regex {
         let mut iterador_caracteres = expression.chars();
 
         while let Some(c) = iterador_caracteres.next(){
-            
+
             let step = match c {
                 '.' => Some(RegexStep::new(RegexValue::Comodin, RegexRep::Exact(1))),
-                'a'..='z' => Some(RegexStep::new(RegexValue::Literal(c), RegexRep::Exact(1))),
+                'a'..='z' | '0'..='9' => Some(RegexStep::new(RegexValue::Literal(c), RegexRep::Exact(1))),
                 '*' => {
                     if let Some(last) = steps.last_mut() {
                         last.set_infinite_repetitions();

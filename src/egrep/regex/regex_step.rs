@@ -1,5 +1,6 @@
 use super::{regex_rep::RegexRep, regex_value::RegexValue};
 
+#[derive(Debug)]
 pub struct RegexStep{
     val: RegexValue,
     rep: RegexRep,

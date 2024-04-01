@@ -11,9 +11,9 @@ fn main() {
     }
 
     match egrep::buscar(&args[1], &args[2]){
-        Ok(ocurrencias) => {},
+        Ok(_) => {},
         Err(e) => {
-            eprint!("{e}");
+            eprintln!("{e}");
         }
     }
     return;
