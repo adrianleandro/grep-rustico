@@ -54,6 +54,7 @@ pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<(), &'a str> {
                 return Err("Error al leer el archivo");
             }
         }
+        //return Ok(());
     }
 }
 

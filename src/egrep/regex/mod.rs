@@ -60,10 +60,11 @@ impl Regex {
         let mut index = 0;
 
         loop {
-            iter = self.steps.iter();
+            iter = self.steps.iter().peekable();
+            let comienzo_match = index;
             while let Some(step) = iter.next() {
                 let mut step_cumplido = true;
-                let mut total_size = 0;
+                //let mut total_size = 0;
                 match step.get_repetitions() {
                     RegexRep::Exact(n) => {
                         for _ in [1..*n] {
@@ -74,21 +75,19 @@ impl Regex {
                                 break;
                             }
 
-                            total_size += size;
+                            index += size;
                         }
                     }
                     _ => todo!()
                 }
-                if step_cumplido {
-                    index += total_size;
-                } else {
-                    index += 1;
+                if !step_cumplido {
+                    index = comienzo_match + 1;
                     break;
                 }
+                if let None = iter.peek() {
+                    return Ok(true);
+                };
             }
-            if let None = iter.next() {
-                return Ok(true);
-            };
 
             if index >= value.len() - 1{
                 return Ok(false);
