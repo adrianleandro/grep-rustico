@@ -40,6 +40,16 @@ impl Regex {
                     )),
                     None => return Err("se encontró un caracter inesperado"),
                 },
+                '[' => {
+                    while let Some(c) = iterador_caracteres.next() {
+                        if c == ']' {
+                            break;
+                        } else {
+                            
+                        }
+                    }
+                    Some(RegexStep::new(RegexValue::Literal('a'), RegexRep::Exact(1)))
+                },
                 _ => return Err("Se encontró un caracter inesperado"),
             };
 
@@ -64,7 +74,6 @@ impl Regex {
             let comienzo_match = index;
             while let Some(step) = iter.next() {
                 let mut step_cumplido = true;
-                //let mut total_size = 0;
                 match step.get_repetitions() {
                     RegexRep::Exact(n) => {
                         for _ in [1..*n] {
@@ -78,6 +87,19 @@ impl Regex {
                             index += size;
                         }
                     }
+                    RegexRep::Any => {
+                        let mut keep_matching = true;
+                        while keep_matching {
+                            
+                            let size = step.get_value().matches(&value[index..]);
+                            
+                            if size != 0 {
+                                index += size;
+                            }else{
+                                keep_matching=false;
+                            }
+                        }
+                    }
                     _ => todo!()
                 }
                 if !step_cumplido {
@@ -89,7 +111,7 @@ impl Regex {
                 };
             }
 
-            if index >= value.len() - 1{
+            if index >= value.len(){
                 return Ok(false);
             }
         }

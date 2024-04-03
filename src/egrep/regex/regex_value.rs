@@ -22,14 +22,17 @@ impl RegexValue {
                     None => 0
                 }
             }
-            RegexValue::Comodin => {
+            RegexValue::Comodin => {                
                 if let Some(c) = value.chars().next() {
-                    c.len_utf8() //cantidad consumida por el input
+                    dbg!(c);
+                    c.len_utf8()
                 } else {
                     0
                 }
             }
-            RegexValue::Clase(clase) => 0,
+            RegexValue::Clase(clase) => {
+                0
+            },
         }
     }
 }
