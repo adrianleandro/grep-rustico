@@ -1,5 +1,5 @@
 use std::env::args as argv;
-mod egrep;
+use grep_rustico::egrep::buscar;
 fn main() {
     let args: Vec<String> = argv().collect();
 
@@ -10,7 +10,7 @@ fn main() {
         return;
     }
 
-    match egrep::buscar(&args[1], &args[2]) {
+    match buscar(&args[1], &args[2]) {
         Ok(_) => {}
         Err(e) => {
             eprintln!("{e}");

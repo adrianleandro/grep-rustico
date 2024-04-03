@@ -5,8 +5,14 @@ mod tests {
 
     #[test]
     #[should_panic]
+    fn buscar_con_regex_vacia() {
+        buscar("", "tests/archivo_inexistente.txt").unwrap();
+    }
+
+    #[test]
+    #[should_panic]
     fn buscar_en_archivo_inexistente() {
-        buscar("prueba", "tests/archivo_inexistente.txt").unwrap();
+        buscar("prueba", "").unwrap();
     }
 
     #[test]
