@@ -11,9 +11,12 @@ pub struct Regex {
 }
 
 impl Regex {
-
     /// Crea una expresion regular con una serie de pasos a seguir para verificar si la misma se encuentra dentro de una linea de texto
     pub fn new(expression: &str) -> Result<Self, &str> {
+        if expression.len() == 0{
+            return Err("Expresion regular inválida");
+        }
+
         let mut steps: Vec<regex_step::RegexStep> = Vec::new();
 
         let mut iterador_caracteres = expression.chars();
@@ -21,7 +24,7 @@ impl Regex {
         while let Some(c) = iterador_caracteres.next() {
             let step = match c {
                 '.' => Some(RegexStep::new(RegexValue::Comodin, RegexRep::Exact(1))),
-                'a'..='z' | '0'..='9' => {
+                'a'..='z' | '0'..='9' | ' ' => {
                     Some(RegexStep::new(RegexValue::Literal(c), RegexRep::Exact(1)))
                 }
                 '*' => {
@@ -45,11 +48,10 @@ impl Regex {
                         if c == ']' {
                             break;
                         } else {
-                            
                         }
                     }
                     Some(RegexStep::new(RegexValue::Literal('a'), RegexRep::Exact(1)))
-                },
+                }
                 _ => return Err("Se encontró un caracter inesperado"),
             };
 
@@ -90,17 +92,16 @@ impl Regex {
                     RegexRep::Any => {
                         let mut keep_matching = true;
                         while keep_matching {
-                            
                             let size = step.get_value().matches(&value[index..]);
-                            
+
                             if size != 0 {
                                 index += size;
-                            }else{
-                                keep_matching=false;
+                            } else {
+                                keep_matching = false;
                             }
                         }
                     }
-                    _ => todo!()
+                    _ => todo!(),
                 }
                 if !step_cumplido {
                     index = comienzo_match + 1;
@@ -111,7 +112,7 @@ impl Regex {
                 };
             }
 
-            if index >= value.len(){
+            if index >= value.len() {
                 return Ok(false);
             }
         }

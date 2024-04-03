@@ -9,14 +9,8 @@ mod regex;
 const COLOR_ROJO: &str = "\x1b[31m";
 const COLOR_STD: &str = "\x1b[0m";
 
-pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<(), &'a str> {
-    let expresion_regular_wrapped: Result<regex::Regex, &str> = regex::Regex::new(&reg_ex);
-    //si el archivo no existe devolver err(el archivo no existe to owned)
-    //por cada linea del archivo leerla <---------
-    //regex_esta_en_linea(&regex, linea)         |
-    //si el filtro da some printear la linea     |
-    //pasar a siguiente linea --------------------
-    let expresion_regular = match expresion_regular_wrapped {
+pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a str> {
+    let expresion_regular = match regex::Regex::new(&reg_ex) {
         Ok(expresion_regular) => expresion_regular,
         Err(e) => {
             return Err(e);
@@ -37,14 +31,18 @@ pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<(), &'a str> {
     let mut cursor = io::Cursor::new(contenido);
     let mut linea_actual = String::new();
 
+    let mut ocurrencias: Vec<String> = Vec::new();
     loop {
         match cursor.read_line(&mut linea_actual) {
             Ok(0) => {
-                return Ok(());
+                return Ok(ocurrencias);
             }
             Ok(_) => {
-                match &expresion_regular.testear_linea(&linea_actual){
-                    Ok(true) => {print!("{linea_actual}")},
+                match &expresion_regular.testear_linea(&linea_actual) {
+                    Ok(true) => {
+                        print!("{linea_actual}");
+                        ocurrencias.push(linea_actual.to_owned());
+                    }
                     Ok(false) => (),
                     Err(e) => println!("{e}"),
                 }
@@ -54,7 +52,7 @@ pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<(), &'a str> {
                 return Err("Error al leer el archivo");
             }
         }
-        return Ok(());
+        //return Ok(ocurrencias);
     }
 }
 

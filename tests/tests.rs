@@ -1,8 +1,26 @@
+use grep_rustico::egrep::buscar;
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     #[test]
-    fn period() {
-        assert_eq!(".", ".");
+    #[should_panic]
+    fn buscar_en_archivo_inexistente() {
+        buscar("prueba", "tests/archivo_inexistente.txt").unwrap();
+    }
+
+    #[test]
+    fn literal() {
+        let resultado = buscar("numero divisible", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 1);
+        assert_eq!(resultado[0], "el 8 es un numero divisible por 2\n");
+    }
+
+    #[test]
+    fn comodin() {
+        let resultado = buscar("ab.cd", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 1);
+        assert_eq!(resultado[0], "se prueba el patron de punto: abvcd\n");
     }
 
     #[test]

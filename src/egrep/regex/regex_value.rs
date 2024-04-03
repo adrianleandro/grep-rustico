@@ -18,11 +18,11 @@ impl RegexValue {
                         } else {
                             0
                         }
-                    },
-                    None => 0
+                    }
+                    None => 0,
                 }
             }
-            RegexValue::Comodin => {                
+            RegexValue::Comodin => {
                 if let Some(c) = value.chars().next() {
                     dbg!(c);
                     c.len_utf8()
@@ -30,9 +30,7 @@ impl RegexValue {
                     0
                 }
             }
-            RegexValue::Clase(clase) => {
-                0
-            },
+            RegexValue::Clase(clase) => 0,
         }
     }
 }

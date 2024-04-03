@@ -1,1 +1,1 @@
-mod egrep;
+pub mod egrep;

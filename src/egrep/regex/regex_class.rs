@@ -6,11 +6,11 @@ pub enum RegexClass {
     Lowercase,
     Uppercase,
     Space,
-    Punct
+    Punct,
 }
 
-impl RegexClass{
-    pub fn new(clase: &str) -> Option<RegexClass>{
+impl RegexClass {
+    pub fn new(clase: &str) -> Option<RegexClass> {
         match clase {
             ":alnum:" => Some(Self::Alphanumeric),
             ":alpha:" => Some(Self::Alphabetic),
@@ -19,16 +19,14 @@ impl RegexClass{
             ":upper:" => Some(Self::Uppercase),
             ":space:" => Some(Self::Space),
             ":punct:" => Some(Self::Punct),
-            _ => None
+            _ => None,
         }
     }
 
     pub fn contiene(&self, caracter: char) -> Option<char> {
         match self {
-            Self::Digit => {
-                Some(caracter)
-            }
-            _ => None
+            Self::Digit => Some(caracter),
+            _ => None,
         }
     }
 }
