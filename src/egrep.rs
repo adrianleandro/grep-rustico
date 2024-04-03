@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 use std::{
     fs::File,
     io::{self, BufRead, Read},
@@ -13,7 +12,7 @@ mod regex;
 /// * expresion regular inválida (ya sea porque esta vacía o bien cuando hay llaves sin cerrar)
 /// * no se pudo abrir el archivo, por ruta invalida o por error de apertura
 /// * error de lectura en el archivo
-/// Además, en caso de que una de las lineas contenga algún caracter que no pertenezca al formato ascii, devolvera ese error por pantalla
+/// Además, en caso de que una de las lineas contenga algún caracter que no pertenezca al formato ascii, devolvera ese error por pantalla y continuará evaluando la linea siguiente
 pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a str> {
     let expresion_regular = match regex::Regex::new(&reg_ex) {
         Ok(expresion_regular) => expresion_regular,

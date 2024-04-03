@@ -1,5 +1,5 @@
 use super::regex_class::RegexClass;
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum RegexValue {
     Literal(char),
     Comodin,

@@ -5,7 +5,7 @@ mod regex_rep;
 mod regex_step;
 mod regex_value;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Regex {
     steps: Vec<regex_step::RegexStep>,
 }
@@ -29,9 +29,27 @@ impl Regex {
                 }
                 '*' => {
                     if let Some(last) = steps.last_mut() {
-                        last.set_infinite_repetitions();
+                        last.set_cero_o_mas();
                     } else {
                         return Err("Se encontró un caracter '*' inesperado");
+                    }
+
+                    None
+                }
+                '+' => {
+                    if let Some(last) = steps.last_mut() {
+                        last.set_uno_o_mas();
+                    } else {
+                        return Err("Se encontró un caracter '+' inesperado");
+                    }
+
+                    None
+                }
+                '?' => {
+                    if let Some(last) = steps.last_mut() {
+                        last.set_n_a_m(0,1);
+                    } else {
+                        return Err("Se encontró un caracter '?' inesperado");
                     }
 
                     None
@@ -93,18 +111,27 @@ impl Regex {
                         }
                     }
                     RegexRep::Any => {
-                        let mut keep_matching = true;
-                        while keep_matching {
-                            let size = step.get_value().matches(&value[index..]);
-
-                            if size != 0 {
-                                index += size;
-                            } else {
-                                keep_matching = false;
-                            }
-                        }
+                        
                     }
-                    _ => todo!(),
+                    RegexRep::Range { min, max } => {
+                        match (min, max) {
+                            (None, None) => todo!(),
+                            (Some(n), None) => {
+                                let mut keep_matching = true;
+                                while keep_matching {
+                                    let size = step.get_value().matches(&value[index..]);
+
+                                    if size != 0 {
+                                        index += size;
+                                    } else {
+                                        keep_matching = false;
+                                    }
+                                }
+                            },
+                            (None, Some(m)) => todo!(),
+                            (Some(n), Some(m)) => todo!()
+                        }
+                    },
                 }
                 if !step_cumplido {
                     index = comienzo_match + 1;
