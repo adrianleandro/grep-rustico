@@ -110,9 +110,6 @@ impl Regex {
                             index += size;
                         }
                     }
-                    RegexRep::Any => {
-                        
-                    }
                     RegexRep::Range { min, max } => {
                         match (min, max) {
                             (None, None) => todo!(),
