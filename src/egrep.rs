@@ -1,9 +1,8 @@
 #![allow(dead_code)]
-use core::arch;
 use std::{
     fs::File,
     io::{self, BufRead, Read},
-    path::{Path, PathBuf},
+    path::Path,
 };
 mod regex;
 
@@ -44,12 +43,12 @@ pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<(), &'a str> {
                 return Ok(());
             }
             Ok(_) => {
-                match &expresion_regular.test(&linea_actual){
-                    Ok(true) => {println!("matcheado")},
+                match &expresion_regular.testear_linea(&linea_actual){
+                    Ok(true) => {print!("{linea_actual}")},
                     Ok(false) => (),
                     Err(e) => println!("{e}"),
                 }
-                linea_actual.clear()
+                linea_actual.clear();
             }
             Err(_) => {
                 return Err("Error al leer el archivo");

@@ -1,5 +1,3 @@
-use std::collections::VecDeque;
-
 use self::{regex_rep::RegexRep, regex_step::RegexStep, regex_value::RegexValue};
 
 mod regex_class;
@@ -13,6 +11,8 @@ pub struct Regex {
 }
 
 impl Regex {
+
+    /// Crea una expresion regular con una serie de pasos a seguir para verificar si la misma se encuentra dentro de una linea de texto
     pub fn new(expression: &str) -> Result<Self, &str> {
         let mut steps: Vec<regex_step::RegexStep> = Vec::new();
 
@@ -51,44 +51,48 @@ impl Regex {
         Ok(Regex { steps })
     }
 
-    pub fn test(&self, value: &str) -> Result<bool, &str> {
+    pub fn testear_linea(&self, value: &str) -> Result<bool, &str> {
         if !value.is_ascii() {
             return Err("el input no es ASCII");
         }
 
-        let mut queue: VecDeque<RegexStep> = VecDeque::from(self.steps.clone());
+        let mut iter;
         let mut index = 0;
 
-        while let Some(step) = queue.pop_front() {
-            match step.get_repetitions() {
-                RegexRep::Exact(n) => {
-                    for _ in [1..*n] {
-                        let size = step.get_value().matches(&value[index..]);
-                        
-                        if size == 0 {
-                            return Ok(false);
-                        }
+        loop {
+            iter = self.steps.iter();
+            while let Some(step) = iter.next() {
+                let mut step_cumplido = true;
+                let mut total_size = 0;
+                match step.get_repetitions() {
+                    RegexRep::Exact(n) => {
+                        for _ in [1..*n] {
+                            let size = step.get_value().matches(&value[index..]);
 
-                        index += size;
-                    }
-                }
-                RegexRep::Any => {
-                    let mut keep_matching = true;
+                            if size == 0 {
+                                step_cumplido = false;
+                                break;
+                            }
 
-                    while keep_matching {
-                        let match_size = step.get_value().matches(&value[index..]);
-
-                        if match_size != 0 {
-                            index += match_size;
-                        } else {
-                            keep_matching = false;
+                            total_size += size;
                         }
                     }
+                    _ => todo!()
                 }
-                RegexRep::Range { min, max } => todo!(),
+                if step_cumplido {
+                    index += total_size;
+                } else {
+                    index += 1;
+                    break;
+                }
+            }
+            if let None = iter.next() {
+                return Ok(true);
+            };
+
+            if index >= value.len() - 1{
+                return Ok(false);
             }
         }
-
-        Ok(true)
     }
 }

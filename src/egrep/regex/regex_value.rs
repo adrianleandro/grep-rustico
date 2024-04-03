@@ -10,10 +10,16 @@ impl RegexValue {
     pub fn matches(&self, value: &str) -> usize {
         match self {
             RegexValue::Literal(l) => {
-                if value.chars().next() == Some(*l) {
-                    l.len_utf8() //cantidad consumida por el input
-                } else {
-                    0
+                //dbg!(value.chars().next(), l);
+                match value.chars().next() {
+                    Some(c) => {
+                        if *l == c {
+                            l.len_utf8()
+                        } else {
+                            0
+                        }
+                    },
+                    None => 0
                 }
             }
             RegexValue::Comodin => {
