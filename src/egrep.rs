@@ -6,9 +6,14 @@ use std::{
 };
 mod regex;
 
-const COLOR_ROJO: &str = "\x1b[31m";
-const COLOR_STD: &str = "\x1b[0m";
-
+/// Recibe una cadena de caracteres a partir de la cual se crea la expresión regular y el path a un archivo.  
+/// Busca las ocurrencias de la expresión regular en cada linea del archivo y las muestra en pantalla.  
+/// Devuelve un vector con todas las lineas en donde se encontró la expresión regular.  
+/// Puede dar error en los siguientes casos:  
+/// * expresion regular inválida (ya sea porque esta vacía o bien cuando hay llaves sin cerrar)
+/// * no se pudo abrir el archivo, por ruta invalida o por error de apertura
+/// * error de lectura en el archivo
+/// Además, en caso de que una de las lineas contenga algún caracter que no pertenezca al formato ascii, devolvera ese error por pantalla
 pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a str> {
     let expresion_regular = match regex::Regex::new(&reg_ex) {
         Ok(expresion_regular) => expresion_regular,
@@ -44,7 +49,7 @@ pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a 
                         ocurrencias.push(linea_actual.to_owned());
                     }
                     Ok(false) => (),
-                    Err(e) => println!("{e}"),
+                    Err(e) => eprintln!("{e}"),
                 }
                 linea_actual.clear();
             }
@@ -54,15 +59,4 @@ pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a 
         }
         //return Ok(ocurrencias);
     }
-}
-
-fn resaltar(inicio_match: usize, fin_match: usize, linea: &String) {
-    println!(
-        "{}{}{}{}{}",
-        &linea[..inicio_match],
-        COLOR_ROJO,
-        &linea[inicio_match..(inicio_match + fin_match)],
-        COLOR_STD,
-        &linea[(inicio_match + fin_match)..]
-    );
 }

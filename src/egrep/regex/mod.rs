@@ -11,7 +11,7 @@ pub struct Regex {
 }
 
 impl Regex {
-    /// Crea una expresion regular con una serie de pasos a seguir para verificar si la misma se encuentra dentro de una linea de texto
+    /// Crea una expresion regular con una serie de pasos a seguir para verificar si la misma se encuentra dentro de una linea de texto.
     pub fn new(expression: &str) -> Result<Self, &str> {
         if expression.len() == 0{
             return Err("Expresion regular inválida");
@@ -63,6 +63,9 @@ impl Regex {
         Ok(Regex { steps })
     }
 
+    /// Recibe una linea de texto y la evalua según la expresión regular.  
+    /// Se devuelve verdadero o falso dependiendo de que la expresión se encuentre en la linea.  
+    /// Devuelve error en caso de que la linea de texto contenga algun carácter que no pertenezca al formato ASCII.  
     pub fn testear_linea(&self, value: &str) -> Result<bool, &str> {
         if !value.is_ascii() {
             return Err("el input no es ASCII");
@@ -71,7 +74,7 @@ impl Regex {
         let mut iter;
         let mut index = 0;
 
-        loop {
+        while index < value.len() {
             iter = self.steps.iter().peekable();
             let comienzo_match = index;
             while let Some(step) = iter.next() {
@@ -111,10 +114,7 @@ impl Regex {
                     return Ok(true);
                 };
             }
-
-            if index >= value.len() {
-                return Ok(false);
-            }
         }
+        Ok(false)
     }
 }
