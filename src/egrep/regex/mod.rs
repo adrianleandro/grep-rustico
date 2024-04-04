@@ -111,22 +111,55 @@ impl Regex {
                         }
                     }
                     RegexRep::Range { min, max } => {
+                        let mut total_matches = 0;
+                        let mut seguir_matcheando = true;
                         match (min, max) {
-                            (None, None) => todo!(),
+                            (None, None) => {},
                             (Some(n), None) => {
-                                let mut keep_matching = true;
-                                while keep_matching {
+                                while seguir_matcheando {
                                     let size = step.get_value().matches(&value[index..]);
 
                                     if size != 0 {
                                         index += size;
+                                        total_matches += 1;
                                     } else {
-                                        keep_matching = false;
+                                        seguir_matcheando = false;
                                     }
                                 }
+                                if(total_matches < *n){
+                                    step_cumplido = false;
+                                }
                             },
-                            (None, Some(m)) => todo!(),
-                            (Some(n), Some(m)) => todo!()
+                            (None, Some(m)) => {
+                                while seguir_matcheando {
+                                    let size = step.get_value().matches(&value[index..]);
+
+                                    if size != 0 {
+                                        index += size;
+                                        total_matches += 1;
+                                    } else {
+                                        seguir_matcheando = false;
+                                    }
+                                }
+                                if(total_matches > *m){
+                                    step_cumplido = false;
+                                }
+                            },
+                            (Some(n), Some(m)) => {
+                                while seguir_matcheando {
+                                    let size = step.get_value().matches(&value[index..]);
+
+                                    if size != 0 {
+                                        index += size;
+                                        total_matches += 1;
+                                    } else {
+                                        seguir_matcheando = false;
+                                    }
+                                }
+                                if(total_matches > *m || total_matches < *n){
+                                    step_cumplido = false;
+                                }
+                            },
                         }
                     },
                 }

@@ -24,7 +24,7 @@ impl RegexValue {
             }
             RegexValue::Comodin => {
                 if let Some(c) = value.chars().next() {
-                    dbg!(c);
+                    //dbg!(c);
                     c.len_utf8()
                 } else {
                     0
