@@ -84,7 +84,7 @@ impl Regex {
     /// Recibe una linea de texto y la evalua según la expresión regular.  
     /// Se devuelve verdadero o falso dependiendo de que la expresión se encuentre en la linea.  
     /// Devuelve error en caso de que la linea de texto contenga algun carácter que no pertenezca al formato ASCII.  
-    pub fn testear_linea(&self, value: &str) -> Result<bool, &str> {
+    pub fn testear_linea(&self, value: &str) -> Result<(usize, usize), &str> {
         if !value.is_ascii() {
             return Err("el input no es ASCII");
         }
@@ -126,7 +126,7 @@ impl Regex {
                                         seguir_matcheando = false;
                                     }
                                 }
-                                if(total_matches < *n){
+                                if total_matches < *n {
                                     step_cumplido = false;
                                 }
                             },
@@ -141,7 +141,7 @@ impl Regex {
                                         seguir_matcheando = false;
                                     }
                                 }
-                                if(total_matches > *m){
+                                if total_matches > *m {
                                     step_cumplido = false;
                                 }
                             },
@@ -156,7 +156,7 @@ impl Regex {
                                         seguir_matcheando = false;
                                     }
                                 }
-                                if(total_matches > *m || total_matches < *n){
+                                if total_matches > *m || total_matches < *n{
                                     step_cumplido = false;
                                 }
                             },
@@ -168,10 +168,10 @@ impl Regex {
                     break;
                 }
                 if let None = iter.peek() {
-                    return Ok(true);
+                    return Ok((comienzo_match, index));
                 };
             }
         }
-        Ok(false)
+        Ok((0,0))
     }
 }
