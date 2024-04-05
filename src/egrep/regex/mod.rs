@@ -13,13 +13,13 @@ pub struct Regex {
 impl Regex {
     /// Crea una expresion regular con una serie de pasos a seguir para verificar si la misma se encuentra dentro de una linea de texto.
     pub fn new(expression: &str) -> Result<Self, &str> {
-        if expression.len() == 0{
+        if expression.len() == 0 || !expression.is_ascii() {
             return Err("Expresion regular inválida");
         }
 
         let mut steps: Vec<regex_step::RegexStep> = Vec::new();
 
-        let mut iterador_caracteres = expression.chars();
+        let mut iterador_caracteres = expression.chars().peekable();
 
         while let Some(c) = iterador_caracteres.next() {
             let step = match c {
@@ -38,7 +38,7 @@ impl Regex {
                 }
                 '+' => {
                     if let Some(last) = steps.last_mut() {
-                        last.set_uno_o_mas();
+                        last.set_n_o_mas(1);
                     } else {
                         return Err("Se encontró un caracter '+' inesperado");
                     }
@@ -59,16 +59,41 @@ impl Regex {
                         RegexValue::Literal(literal),
                         RegexRep::Exact(1),
                     )),
-                    None => return Err("se encontró un caracter inesperado"),
+                    None => return Err("Se encontró un caracter inesperado"),
                 },
-                '[' => {
-                    while let Some(c) = iterador_caracteres.next() {
-                        if c == ']' {
-                            break;
-                        } else {
+                '{' => {
+                    let mut rango = String::new();
+                    let mut nro_comas = 0;
+                    while let Some(p) = iterador_caracteres.next() {
+                        match p {
+                            '}' => {
+                                if rango.len() == 0 {
+                                    return Err("Contenido de operador {} invalido")
+                                } else {
+                                    break;
+                                }
+                            },
+                            ',' => {
+                                nro_comas += 1;
+                                rango.push(p);
+                            }
+                            '0'..='9' => {
+                                rango.push(p);
+                            }
+                            _ => {
+                                return Err("Se encontró un caracter inesperado dentro del operador {}");
+                            }
+                        }
+                        if nro_comas > 1 {
+                            return Err("Contenido de operador {} invalido")
                         }
                     }
-                    Some(RegexStep::new(RegexValue::Literal('a'), RegexRep::Exact(1)))
+                    if let Some(last) = steps.last_mut() {
+                        last.set_repeticiones_rango(rango);
+                    } else {
+                        return Err("Se encontró un caracter '{' inesperado");
+                    }
+                    None
                 }
                 _ => return Err("Se encontró un caracter inesperado"),
             };
