@@ -129,9 +129,9 @@ impl Regex {
                 //dbg!(step);dbg!(iter.next());panic!();
                 match step.get_repetitions() {
                     RegexRep::Exact(n) => {
-                        for _ in [1..*n] {
+                        for _ in 1..=*n {
                             let size = step.get_value().matches(&value[index..]);
-
+                            dbg!(*n);
                             if size == 0 {
                                 step_cumplido = false;
                                 break;
@@ -193,6 +193,7 @@ impl Regex {
                         }
                     }
                 }
+                dbg!(step_cumplido);
                 if !step_cumplido {
                     index = comienzo_match + 1;
                     break;

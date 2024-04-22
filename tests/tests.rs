@@ -30,17 +30,36 @@ mod tests {
     }
 
     #[test]
-    fn period_with_asterisc() {
-        assert_eq!(".*", ".*");
+    fn llaves_exacto() {
+        let resultado = buscar("ab{3}cd", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 1);
+        assert_eq!(resultado[0], "la b podria repetirse de 2 a 4 veces abbbcd\n");
+    }
+
+
+    #[test]
+    fn llaves_minimo() {
+        let resultado = buscar("de{4,}f", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 1);
+        assert_eq!(resultado[0], "ejemplo de abc|deeeeeeef\n");
+    }
+
+    #[test]
+    fn llaves_maximo() {
+        let resultado = buscar("de{,7}f", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 1);
+        assert_eq!(resultado[0], "ejemplo de abc|deeeeeeef\n");
+    }
+
+    #[test]
+    fn llaves_rango() {
+        let resultado = buscar("ab{2,4}cd", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 1);
+        assert_eq!(resultado[0], "la b podria repetirse de 2 a 4 veces abbbcd\n");
     }
 
     #[test]
     fn bracket_expression() {
         assert_eq!("[]", "[]");
-    }
-
-    #[test]
-    fn curly_bracket_expression() {
-        assert_eq!("{}", "{}");
     }
 }
