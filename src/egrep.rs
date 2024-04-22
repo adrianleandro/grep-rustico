@@ -47,7 +47,6 @@ pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a 
                     Ok((start, end)) => {
                         resaltar(*start, *end, &linea_actual);
                         ocurrencias.push(linea_actual.to_owned());
-                        return Ok(ocurrencias);
                     }
                     Err(e) => eprintln!("{e}"),
                 }

@@ -18,6 +18,11 @@ impl RegexStep {
         self
     }
 
+    pub fn set_any(&mut self) -> &mut Self {
+        self.rep = RegexRep::Any;
+        self
+    }
+
     pub fn set_repeticiones_rango(&mut self, rango: String) -> &mut Self {
         let mut n: String = String::new();
         let mut m: String = String::new();

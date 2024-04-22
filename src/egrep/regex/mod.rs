@@ -1,5 +1,3 @@
-use core::panic;
-
 use self::{regex_rep::RegexRep, regex_step::RegexStep, regex_value::RegexValue};
 
 mod regex_class;
@@ -31,7 +29,7 @@ impl Regex {
                 }
                 '*' => {
                     if let Some(last) = steps.last_mut() {
-                        last.set_cero_o_mas();
+                        last.set_any();
                     } else {
                         return Err("Se encontró un caracter '*' inesperado");
                     }
@@ -131,7 +129,6 @@ impl Regex {
                     RegexRep::Exact(n) => {
                         for _ in 1..=*n {
                             let size = step.get_value().matches(&value[index..]);
-                            dbg!(*n);
                             if size == 0 {
                                 step_cumplido = false;
                                 break;
@@ -140,52 +137,46 @@ impl Regex {
                             index += size;
                         }
                     }
+                    RegexRep::Any => {
+                        let mut seguir_matcheando = true;
+                        while seguir_matcheando {
+                            let size = step.get_value().matches(&value[index..]);
+                            let mut next_step_size = 0;
+                            if let Some(next_step) = iter.peek() {
+                                next_step_size = next_step.get_value().matches(&value[index..]);
+                            }
+                            match (size, next_step_size) {
+                                (0,_) => seguir_matcheando  = false,
+                                (_,0) => index += size,
+                                (_,_) => seguir_matcheando = false,
+                            }
+                        }
+                    }
                     RegexRep::Range { min, max } => {
                         let mut total_matches = 0;
                         let mut seguir_matcheando = true;
+                        while seguir_matcheando {
+                            let size = step.get_value().matches(&value[index..]);
+                            if size != 0 {
+                                index += size;
+                                total_matches += 1;
+                            } else {
+                                seguir_matcheando = false;
+                            }
+                        }
                         match (min, max) {
                             (None, None) => {}
                             (Some(n), None) => {
-                                while seguir_matcheando {
-                                    let size = step.get_value().matches(&value[index..]);
-
-                                    if size != 0 {
-                                        index += size;
-                                        total_matches += 1;
-                                    } else {
-                                        seguir_matcheando = false;
-                                    }
-                                }
                                 if total_matches < *n {
                                     step_cumplido = false;
                                 }
                             }
                             (None, Some(m)) => {
-                                while seguir_matcheando {
-                                    let size = step.get_value().matches(&value[index..]);
-
-                                    if size != 0 {
-                                        index += size;
-                                        total_matches += 1;
-                                    } else {
-                                        seguir_matcheando = false;
-                                    }
-                                }
                                 if total_matches > *m {
                                     step_cumplido = false;
                                 }
                             }
                             (Some(n), Some(m)) => {
-                                while seguir_matcheando {
-                                    let size = step.get_value().matches(&value[index..]);
-
-                                    if size != 0 {
-                                        index += size;
-                                        total_matches += 1;
-                                    } else {
-                                        seguir_matcheando = false;
-                                    }
-                                }
                                 if total_matches > *m || total_matches < *n {
                                     step_cumplido = false;
                                 }
@@ -193,7 +184,6 @@ impl Regex {
                         }
                     }
                 }
-                dbg!(step_cumplido);
                 if !step_cumplido {
                     index = comienzo_match + 1;
                     break;

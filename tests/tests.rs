@@ -30,6 +30,14 @@ mod tests {
     }
 
     #[test]
+    fn signo_pregunta() {
+        let resultado = buscar("xy?z", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 2);
+        assert_eq!(resultado[0], "esta linea tiene xyz\n");
+        assert_eq!(resultado[1], "esta linea tiene xz\n");
+    }
+
+    #[test]
     fn llaves_exacto() {
         let resultado = buscar("ab{3}cd", "tests/test.txt").unwrap();
         assert_eq!(resultado.len(), 1);

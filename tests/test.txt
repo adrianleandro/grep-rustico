@@ -2,6 +2,8 @@ se prueba el patron de punto: abvcd
 se prueba el patron con punto y asterisco: de44444fg
 se prueba la eleccion entre la b o la c: abd
 la b podria repetirse de 2 a 4 veces abbbcd
+esta linea tiene xyz
+esta linea tiene xz
 ejemplo de abc|deeeeeeef
 de todas las letras del abecedario la a es una vocal y ademas la primera
 existen muchas vocales pero la h no es una vocal si no que una consonante
