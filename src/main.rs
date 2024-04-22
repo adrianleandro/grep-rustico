@@ -1,5 +1,5 @@
-use std::env::args as argv;
 use grep_rustico::egrep::buscar;
+use std::env::args as argv;
 fn main() {
     let args: Vec<String> = argv().collect();
 

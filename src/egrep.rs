@@ -43,8 +43,8 @@ pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a 
             }
             Ok(_) => {
                 match &expresion_regular.testear_linea(&linea_actual) {
-                    Ok((0,0)) => (),
-                    Ok((start,end)) => {
+                    Ok((0, 0)) => (),
+                    Ok((start, end)) => {
                         resaltar(*start, *end, &linea_actual);
                         ocurrencias.push(linea_actual.to_owned());
                     }
@@ -61,5 +61,12 @@ pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a 
 }
 
 fn resaltar(comienzo_match: usize, fin_match: usize, linea: &String) {
-    print!("{}{}{}{}{}", &linea[..comienzo_match],"\x1b[31m", &linea[comienzo_match..fin_match], "\x1b[0m", &linea[fin_match..]);
+    print!(
+        "{}{}{}{}{}",
+        &linea[..comienzo_match],
+        "\x1b[31m",
+        &linea[comienzo_match..fin_match],
+        "\x1b[0m",
+        &linea[fin_match..]
+    );
 }

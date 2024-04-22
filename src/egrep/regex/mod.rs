@@ -1,3 +1,5 @@
+use core::panic;
+
 use self::{regex_rep::RegexRep, regex_step::RegexStep, regex_value::RegexValue};
 
 mod regex_class;
@@ -47,7 +49,7 @@ impl Regex {
                 }
                 '?' => {
                     if let Some(last) = steps.last_mut() {
-                        last.set_n_a_m(0,1);
+                        last.set_n_a_m(0, 1);
                     } else {
                         return Err("Se encontró un caracter '?' inesperado");
                     }
@@ -68,11 +70,11 @@ impl Regex {
                         match p {
                             '}' => {
                                 if rango.len() == 0 {
-                                    return Err("Contenido de operador {} invalido")
+                                    return Err("Contenido de operador {} invalido");
                                 } else {
                                     break;
                                 }
-                            },
+                            }
                             ',' => {
                                 nro_comas += 1;
                                 rango.push(p);
@@ -81,11 +83,13 @@ impl Regex {
                                 rango.push(p);
                             }
                             _ => {
-                                return Err("Se encontró un caracter inesperado dentro del operador {}");
+                                return Err(
+                                    "Se encontró un caracter inesperado dentro del operador {}",
+                                );
                             }
                         }
                         if nro_comas > 1 {
-                            return Err("Contenido de operador {} invalido")
+                            return Err("Contenido de operador {} invalido");
                         }
                     }
                     if let Some(last) = steps.last_mut() {
@@ -122,6 +126,7 @@ impl Regex {
             let comienzo_match = index;
             while let Some(step) = iter.next() {
                 let mut step_cumplido = true;
+                //dbg!(step);dbg!(iter.next());panic!();
                 match step.get_repetitions() {
                     RegexRep::Exact(n) => {
                         for _ in [1..*n] {
@@ -139,7 +144,7 @@ impl Regex {
                         let mut total_matches = 0;
                         let mut seguir_matcheando = true;
                         match (min, max) {
-                            (None, None) => {},
+                            (None, None) => {}
                             (Some(n), None) => {
                                 while seguir_matcheando {
                                     let size = step.get_value().matches(&value[index..]);
@@ -154,7 +159,7 @@ impl Regex {
                                 if total_matches < *n {
                                     step_cumplido = false;
                                 }
-                            },
+                            }
                             (None, Some(m)) => {
                                 while seguir_matcheando {
                                     let size = step.get_value().matches(&value[index..]);
@@ -169,7 +174,7 @@ impl Regex {
                                 if total_matches > *m {
                                     step_cumplido = false;
                                 }
-                            },
+                            }
                             (Some(n), Some(m)) => {
                                 while seguir_matcheando {
                                     let size = step.get_value().matches(&value[index..]);
@@ -181,12 +186,12 @@ impl Regex {
                                         seguir_matcheando = false;
                                     }
                                 }
-                                if total_matches > *m || total_matches < *n{
+                                if total_matches > *m || total_matches < *n {
                                     step_cumplido = false;
                                 }
-                            },
+                            }
                         }
-                    },
+                    }
                 }
                 if !step_cumplido {
                     index = comienzo_match + 1;
@@ -197,6 +202,6 @@ impl Regex {
                 };
             }
         }
-        Ok((0,0))
+        Ok((0, 0))
     }
 }
