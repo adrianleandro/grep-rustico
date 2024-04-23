@@ -1,4 +1,4 @@
-use self::{regex_rep::RegexRep, regex_step::RegexStep, regex_value::RegexValue};
+use self::{regex_class::RegexClass, regex_rep::RegexRep, regex_step::RegexStep, regex_value::RegexValue};
 
 mod regex_class;
 mod regex_rep;
@@ -96,6 +96,48 @@ impl Regex {
                         return Err("Se encontró un caracter '{' inesperado");
                     }
                     None
+                }
+                '[' => {
+                    let mut opciones = String::new();
+                    let mut step = None;
+                    while let Some(p) = iterador_caracteres.next() {
+                        match p {
+                            '[' => {
+                                let mut class = String::new();
+                                for _ in 0..7 {
+                                    if let Some(ch) = iterador_caracteres.next() {
+                                        class.push(ch);
+                                    } else {
+                                        return Err("Contenido de operador [] invalido");    
+                                    }
+                                }
+                                let clase = RegexClass::new(class.as_str()).unwrap();
+                                step = Some(RegexStep::new(RegexValue::Clase(clase), RegexRep::Exact(1)));
+                                for _ in 0..2 {
+                                    match iterador_caracteres.next() {
+                                        Some(']') => {},
+                                        _ => return Err("Caracter '[' sin cerrar")
+                                    }
+                                }
+                            },
+                            ']' => {
+                                if opciones.len() == 0 {
+                                    return Err("Contenido de operador [] invalido");
+                                } else {
+                                    break;
+                                }
+                            }
+                            'a'..='z'|'0'..='9' => {
+                                opciones.push(p);
+                            }
+                            _ => {
+                                return Err(
+                                    "Se encontró un caracter inesperado dentro del operador []",
+                                );
+                            }
+                        }
+                    }
+                    step
                 }
                 _ => return Err("Se encontró un caracter inesperado"),
             };

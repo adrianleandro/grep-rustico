@@ -30,7 +30,18 @@ impl RegexValue {
                     0
                 }
             }
-            RegexValue::Clase(clase) => 0,
+            RegexValue::Clase(clase) => {
+                match value.chars().next(){
+                    Some(caracter) => {
+                        if clase.contiene(caracter) {
+                            caracter.len_utf8()
+                        } else {
+                            0
+                        }
+                    }
+                    None => 0,
+                }
+            },
         }
     }
 }

@@ -23,10 +23,16 @@ impl RegexClass {
         }
     }
 
-    pub fn contiene(&self, caracter: char) -> Option<char> {
-        match self {
-            Self::Digit => Some(caracter),
-            _ => None,
+    pub fn contiene(&self, caracter: char) -> bool {
+        match (self, caracter) {
+            (Self::Alphanumeric, '0'..='9'|'A'..='Z'|'a'..='z') => true,
+            (Self::Alphabetic, 'A'..='Z'|'a'..='z') => true,
+            (Self::Digit, '0'..='9') => true,
+            (Self::Lowercase, 'a'..='z') => true,
+            (Self::Uppercase, 'A'..='Z') => true,
+            (Self::Space, ' ') => true,
+            (Self::Punct, '.'|','|':'|';') => true,
+            _ => false,
         }
     }
 }

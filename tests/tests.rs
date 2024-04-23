@@ -67,7 +67,17 @@ mod tests {
     }
 
     #[test]
-    fn bracket_expression() {
-        assert_eq!("[]", "[]");
+    fn clase_space() {
+        let resultado = buscar("hola[[:space:]]mundo", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 1);
+        assert_eq!(resultado[0], "en un proyecto nuevo de rust se genera un programa que imprime hola mundo por la pantalla principal\n");
+    }
+
+    #[test]
+    fn clase_digit() {
+        let resultado = buscar("hola[[:digit:]]mundo", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 2);
+        assert_eq!(resultado[0], "hola321 mundo\n");
+        assert_eq!(resultado[1], "en un proyecto nuevo de rust se genera un programa que imprime hola4mundo por la pantalla principal\n");
     }
 }

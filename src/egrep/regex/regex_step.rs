@@ -1,5 +1,3 @@
-use std::str::FromStr;
-
 use super::{regex_rep::RegexRep, regex_value::RegexValue};
 
 #[derive(Debug)]
@@ -40,7 +38,7 @@ impl RegexStep {
             }
         }
         match (n.parse::<usize>(), m.parse::<usize>()) {
-            (Err(_), Err(_)) => self,
+            (Err(_), Err(_)) => self.set_cero_o_mas(),
             (Err(_), Ok(m)) => self.set_a_m(m),
             (Ok(n), Err(_)) => {
                 if es_exacto {
