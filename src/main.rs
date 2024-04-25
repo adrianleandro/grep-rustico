@@ -4,7 +4,7 @@ fn main() {
     let args: Vec<String> = argv().collect();
 
     if argv().count() != 3 {
-        if let Some(nombre_programa) = args.get(0) {
+        if let Some(nombre_programa) = args.first() {
             eprintln!("Uso: {} [expresión regular] [archivo]", nombre_programa);
         }
         return;
@@ -16,5 +16,4 @@ fn main() {
             eprintln!("{e}");
         }
     }
-    return;
 }

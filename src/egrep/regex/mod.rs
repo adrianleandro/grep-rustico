@@ -13,7 +13,7 @@ pub struct Regex {
 impl Regex {
     /// Crea una expresion regular con una serie de pasos a seguir para verificar si la misma se encuentra dentro de una linea de texto.
     pub fn new(expression: &str) -> Result<Self, &str> {
-        if expression.len() == 0 || !expression.is_ascii() {
+        if expression.is_empty() || !expression.is_ascii() {
             return Err("Expresion regular inválida");
         }
 
@@ -24,7 +24,9 @@ impl Regex {
         while let Some(c) = iterador_caracteres.next() {
             let step = match c {
                 '.' => Some(RegexStep::new(RegexValue::Comodin, RegexRep::Exact(1))),
-                'a'..='z' | '0'..='9' | ' ' => Some(RegexStep::new(RegexValue::Literal(c), RegexRep::Exact(1))),
+                'a'..='z' | '0'..='9' | ' ' => {
+                    Some(RegexStep::new(RegexValue::Literal(c), RegexRep::Exact(1)))
+                }
                 '*' => {
                     if let Some(last) = steps.last_mut() {
                         last.set_any();
@@ -59,10 +61,10 @@ impl Regex {
                 '{' => {
                     let mut rango = String::new();
                     let mut nro_comas = 0;
-                    while let Some(p) = iterador_caracteres.next() {
+                    for p in iterador_caracteres.by_ref() {
                         match p {
                             '}' => {
-                                if rango.len() == 0 {
+                                if rango.is_empty() {
                                     return Err("Contenido de operador {} invalido");
                                 } else {
                                     break;
@@ -95,14 +97,16 @@ impl Regex {
                 '[' => {
                     let mut contenido = String::new();
                     let mut cantidad_corchetes = 1;
-                    while let Some(a) = iterador_caracteres.next() {
+                    for a in iterador_caracteres.by_ref() {
                         match a {
                             ']' => {
                                 cantidad_corchetes -= 1;
-                                if cantidad_corchetes == 0 {break}
-                            },
+                                if cantidad_corchetes == 0 {
+                                    break;
+                                }
+                            }
                             '[' => cantidad_corchetes += 1,
-                            _ => {},
+                            _ => {}
                         }
                         contenido.push(a);
                     }
@@ -157,9 +161,9 @@ impl Regex {
                                 next_step_size = next_step.get_value().matches(&value[index..]);
                             }
                             match (size, next_step_size) {
-                                (0,_) => seguir_matcheando  = false,
-                                (_,0) => index += size,
-                                (_,_) => seguir_matcheando = false,
+                                (0, _) => seguir_matcheando = false,
+                                (_, 0) => index += size,
+                                (_, _) => seguir_matcheando = false,
                             }
                         }
                     }
@@ -199,7 +203,7 @@ impl Regex {
                     index = comienzo_match + 1;
                     break;
                 }
-                if let None = iter.peek() {
+                if iter.peek().is_none() {
                     return Ok((comienzo_match, index));
                 };
             }

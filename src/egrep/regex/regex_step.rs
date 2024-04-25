@@ -13,7 +13,7 @@ impl RegexStep {
 
     pub fn new_bracket_expression(expression: String) -> Option<Self> {
         let mut iterador_caracteres = expression.chars();
-        let mut opciones: Vec<char>= Vec::new();
+        let mut opciones: Vec<char> = Vec::new();
         while let Some(p) = iterador_caracteres.next() {
             match p {
                 '[' => {
@@ -22,23 +22,29 @@ impl RegexStep {
                         if let Some(ch) = iterador_caracteres.next() {
                             class.push(ch);
                         } else {
-                            return None;    
+                            return None;
                         }
                     }
                     let clase = RegexClass::new(class.as_str());
                     if let Some(clase_encontrada) = clase {
-                        return Some(RegexStep::new(RegexValue::Clase(clase_encontrada), RegexRep::Exact(1)));
+                        return Some(RegexStep::new(
+                            RegexValue::Clase(clase_encontrada),
+                            RegexRep::Exact(1),
+                        ));
                     } else {
                         return None;
                     }
-                },
+                }
                 ',' => {}
                 _ => {
                     opciones.push(p);
                 }
             }
         }
-        Some(RegexStep::new(RegexValue::Opcion(opciones), RegexRep::Exact(1)))
+        Some(RegexStep::new(
+            RegexValue::Opcion(opciones),
+            RegexRep::Exact(1),
+        ))
     }
 
     pub fn set_exact(&mut self, n: usize) -> &mut Self {
@@ -54,10 +60,9 @@ impl RegexStep {
     pub fn set_repeticiones_rango(&mut self, rango: String) -> &mut Self {
         let mut n: String = String::new();
         let mut m: String = String::new();
-        let mut caracteres = rango.chars();
         let mut target = &mut n;
         let mut es_exacto = true;
-        while let Some(c) = caracteres.next() {
+        for c in rango.chars() {
             match c {
                 '0'..='9' => target.push(c),
                 ',' => {

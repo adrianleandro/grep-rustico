@@ -41,9 +41,11 @@ mod tests {
     fn llaves_exacto() {
         let resultado = buscar("ab{3}cd", "tests/test.txt").unwrap();
         assert_eq!(resultado.len(), 1);
-        assert_eq!(resultado[0], "la b podria repetirse de 2 a 4 veces abbbcd\n");
+        assert_eq!(
+            resultado[0],
+            "la b podria repetirse de 2 a 4 veces abbbcd\n"
+        );
     }
-
 
     #[test]
     fn llaves_minimo() {
@@ -63,14 +65,20 @@ mod tests {
     fn llaves_rango() {
         let resultado = buscar("ab{2,4}cd", "tests/test.txt").unwrap();
         assert_eq!(resultado.len(), 1);
-        assert_eq!(resultado[0], "la b podria repetirse de 2 a 4 veces abbbcd\n");
+        assert_eq!(
+            resultado[0],
+            "la b podria repetirse de 2 a 4 veces abbbcd\n"
+        );
     }
 
     #[test]
     fn opciones() {
         let resultado = buscar("a[bc]d", "tests/test.txt").unwrap();
         assert_eq!(resultado.len(), 1);
-        assert_eq!(resultado[0], "se prueba la eleccion entre la b o la c: abd\n");
+        assert_eq!(
+            resultado[0],
+            "se prueba la eleccion entre la b o la c: abd\n"
+        );
     }
 
     #[test]
@@ -91,7 +99,10 @@ mod tests {
     fn clase_upper_dos_veces() {
         let resultado = buscar("[[:upper:]]ascal[[:upper:]]ase", "tests/test.txt").unwrap();
         assert_eq!(resultado.len(), 1);
-        assert_eq!(resultado[0], "La notacion PascalCase combina las palabras directamente\n");
+        assert_eq!(
+            resultado[0],
+            "La notacion PascalCase combina las palabras directamente\n"
+        );
     }
 
     #[test]
@@ -106,6 +117,9 @@ mod tests {
         let resultado = buscar("[[:alnum:]] es alfanumerico", "tests/test.txt").unwrap();
         assert_eq!(resultado.len(), 2);
         assert_eq!(resultado[0], "el caracter k es alfanumerico y alfabetico\n");
-        assert_eq!(resultado[1], "el caracter 2 es alfanumerico pero no alfabetico\n");
+        assert_eq!(
+            resultado[1],
+            "el caracter 2 es alfanumerico pero no alfabetico\n"
+        );
     }
 }

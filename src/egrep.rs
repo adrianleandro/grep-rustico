@@ -14,7 +14,7 @@ mod regex;
 /// * error de lectura en el archivo
 /// Además, en caso de que una de las lineas contenga algún caracter que no pertenezca al formato ascii, devolvera ese error por pantalla y continuará evaluando la linea siguiente
 pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a str> {
-    let expresion_regular = match regex::Regex::new(&reg_ex) {
+    let expresion_regular = match regex::Regex::new(reg_ex) {
         Ok(expresion_regular) => expresion_regular,
         Err(e) => {
             return Err(e);
@@ -22,13 +22,13 @@ pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a 
     };
     let path = Path::new(archivo);
 
-    let mut file = match File::open(&path) {
+    let mut file = match File::open(path) {
         Err(_) => return Err("No se pudo abrir el archivo"),
         Ok(file) => file,
     };
 
     let mut contenido = String::new();
-    if let Err(_) = file.read_to_string(&mut contenido) {
+    if file.read_to_string(&mut contenido).is_err() {
         return Err("Error al leer el archivo");
     };
 
@@ -60,13 +60,11 @@ pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a 
     }
 }
 
-fn resaltar(comienzo_match: usize, fin_match: usize, linea: &String) {
+fn resaltar(comienzo_match: usize, fin_match: usize, linea: &str) {
     print!(
-        "{}{}{}{}{}",
+        "{}\x1b[31m{}\x1b[0m{}",
         &linea[..comienzo_match],
-        "\x1b[31m",
         &linea[comienzo_match..fin_match],
-        "\x1b[0m",
         &linea[fin_match..]
     );
 }

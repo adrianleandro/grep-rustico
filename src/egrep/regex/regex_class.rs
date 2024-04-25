@@ -24,15 +24,15 @@ impl RegexClass {
     }
 
     pub fn contiene(&self, caracter: char) -> bool {
-        match (self, caracter) {
-            (Self::Alphanumeric, '0'..='9'|'A'..='Z'|'a'..='z') => true,
-            (Self::Alphabetic, 'A'..='Z'|'a'..='z') => true,
-            (Self::Digit, '0'..='9') => true,
-            (Self::Lowercase, 'a'..='z') => true,
-            (Self::Uppercase, 'A'..='Z') => true,
-            (Self::Space, ' ') => true,
-            (Self::Punct, '.'|','|':'|';') => true,
-            _ => false,
-        }
+        matches!(
+            (self, caracter),
+            (Self::Alphanumeric, '0'..='9'|'A'..='Z'|'a'..='z') |
+            (Self::Alphabetic, 'A'..='Z'|'a'..='z') |
+            (Self::Digit, '0'..='9') |
+            (Self::Lowercase, 'a'..='z') |
+            (Self::Uppercase, 'A'..='Z') |
+            (Self::Space, ' ') |
+            (Self::Punct, '.'|','|':'|';')
+        )
     }
 }
