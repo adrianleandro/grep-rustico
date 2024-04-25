@@ -6,4 +6,4 @@
 
 # Estado del proyecto
   * Matchea expresiones regulares sin caracteres especiales
-  * Metacaracteres implementados: ".", "{}", "?", "+"
+  * Metacaracteres implementados: ".", "*", "{}", "[]", "?", "+"
