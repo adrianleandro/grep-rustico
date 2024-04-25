@@ -1,4 +1,4 @@
-use self::{regex_class::RegexClass, regex_rep::RegexRep, regex_step::RegexStep, regex_value::RegexValue};
+use self::{regex_rep::RegexRep, regex_step::RegexStep, regex_value::RegexValue};
 
 mod regex_class;
 mod regex_rep;
@@ -24,16 +24,13 @@ impl Regex {
         while let Some(c) = iterador_caracteres.next() {
             let step = match c {
                 '.' => Some(RegexStep::new(RegexValue::Comodin, RegexRep::Exact(1))),
-                'a'..='z' | '0'..='9' | ' ' => {
-                    Some(RegexStep::new(RegexValue::Literal(c), RegexRep::Exact(1)))
-                }
+                'a'..='z' | '0'..='9' | ' ' => Some(RegexStep::new(RegexValue::Literal(c), RegexRep::Exact(1))),
                 '*' => {
                     if let Some(last) = steps.last_mut() {
                         last.set_any();
                     } else {
                         return Err("Se encontró un caracter '*' inesperado");
                     }
-
                     None
                 }
                 '+' => {
@@ -42,7 +39,6 @@ impl Regex {
                     } else {
                         return Err("Se encontró un caracter '+' inesperado");
                     }
-
                     None
                 }
                 '?' => {
@@ -51,7 +47,6 @@ impl Regex {
                     } else {
                         return Err("Se encontró un caracter '?' inesperado");
                     }
-
                     None
                 }
                 '\\' => match iterador_caracteres.next() {
@@ -98,55 +93,30 @@ impl Regex {
                     None
                 }
                 '[' => {
-                    let mut opciones = String::new();
-                    let mut step = None;
-                    while let Some(p) = iterador_caracteres.next() {
-                        match p {
-                            '[' => {
-                                let mut class = String::new();
-                                for _ in 0..7 {
-                                    if let Some(ch) = iterador_caracteres.next() {
-                                        class.push(ch);
-                                    } else {
-                                        return Err("Contenido de operador [] invalido");    
-                                    }
-                                }
-                                let clase = RegexClass::new(class.as_str()).unwrap();
-                                step = Some(RegexStep::new(RegexValue::Clase(clase), RegexRep::Exact(1)));
-                                for _ in 0..2 {
-                                    match iterador_caracteres.next() {
-                                        Some(']') => {},
-                                        _ => return Err("Caracter '[' sin cerrar")
-                                    }
-                                }
-                            },
+                    let mut contenido = String::new();
+                    let mut cantidad_corchetes = 1;
+                    while let Some(a) = iterador_caracteres.next() {
+                        match a {
                             ']' => {
-                                if opciones.len() == 0 {
-                                    return Err("Contenido de operador [] invalido");
-                                } else {
-                                    break;
-                                }
-                            }
-                            'a'..='z'|'0'..='9' => {
-                                opciones.push(p);
-                            }
-                            _ => {
-                                return Err(
-                                    "Se encontró un caracter inesperado dentro del operador []",
-                                );
-                            }
+                                cantidad_corchetes -= 1;
+                                if cantidad_corchetes == 0 {break}
+                            },
+                            '[' => cantidad_corchetes += 1,
+                            _ => {},
                         }
+                        contenido.push(a);
                     }
-                    step
+                    if contenido.is_empty() || cantidad_corchetes > 0 {
+                        return Err("Contenido de operador [] inválido");
+                    }
+                    RegexStep::new_bracket_expression(contenido)
                 }
                 _ => return Err("Se encontró un caracter inesperado"),
             };
-
             if let Some(p) = step {
                 steps.push(p);
             }
         }
-
         Ok(Regex { steps })
     }
 
@@ -166,7 +136,6 @@ impl Regex {
             let comienzo_match = index;
             while let Some(step) = iter.next() {
                 let mut step_cumplido = true;
-                //dbg!(step);dbg!(iter.next());panic!();
                 match step.get_repetitions() {
                     RegexRep::Exact(n) => {
                         for _ in 1..=*n {

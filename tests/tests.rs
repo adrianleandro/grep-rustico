@@ -67,6 +67,13 @@ mod tests {
     }
 
     #[test]
+    fn opciones() {
+        let resultado = buscar("a[bc]d", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 1);
+        assert_eq!(resultado[0], "se prueba la eleccion entre la b o la c: abd\n");
+    }
+
+    #[test]
     fn clase_space() {
         let resultado = buscar("hola[[:space:]]mundo", "tests/test.txt").unwrap();
         assert_eq!(resultado.len(), 1);
@@ -76,8 +83,29 @@ mod tests {
     #[test]
     fn clase_digit() {
         let resultado = buscar("hola[[:digit:]]mundo", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 1);
+        assert_eq!(resultado[0], "en un proyecto nuevo de rust se genera un programa que imprime hola4mundo por la pantalla principal\n");
+    }
+
+    #[test]
+    fn clase_upper_dos_veces() {
+        let resultado = buscar("[[:upper:]]ascal[[:upper:]]ase", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 1);
+        assert_eq!(resultado[0], "La notacion PascalCase combina las palabras directamente\n");
+    }
+
+    #[test]
+    fn clase_alfabetico() {
+        let resultado = buscar("[[:alpha:]] es .* y alfabetico", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 1);
+        assert_eq!(resultado[0], "el caracter k es alfanumerico y alfabetico\n");
+    }
+
+    #[test]
+    fn clase_alfanumerico() {
+        let resultado = buscar("[[:alnum:]] es alfanumerico", "tests/test.txt").unwrap();
         assert_eq!(resultado.len(), 2);
-        assert_eq!(resultado[0], "hola321 mundo\n");
-        assert_eq!(resultado[1], "en un proyecto nuevo de rust se genera un programa que imprime hola4mundo por la pantalla principal\n");
+        assert_eq!(resultado[0], "el caracter k es alfanumerico y alfabetico\n");
+        assert_eq!(resultado[1], "el caracter 2 es alfanumerico pero no alfabetico\n");
     }
 }

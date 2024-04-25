@@ -1,4 +1,4 @@
-use super::{regex_rep::RegexRep, regex_value::RegexValue};
+use super::{regex_class::RegexClass, regex_rep::RegexRep, regex_value::RegexValue};
 
 #[derive(Debug)]
 pub struct RegexStep {
@@ -9,6 +9,36 @@ pub struct RegexStep {
 impl RegexStep {
     pub fn new(val: RegexValue, rep: RegexRep) -> Self {
         RegexStep { val, rep }
+    }
+
+    pub fn new_bracket_expression(expression: String) -> Option<Self> {
+        let mut iterador_caracteres = expression.chars();
+        let mut opciones: Vec<char>= Vec::new();
+        while let Some(p) = iterador_caracteres.next() {
+            match p {
+                '[' => {
+                    let mut class = String::new();
+                    for _ in 0..7 {
+                        if let Some(ch) = iterador_caracteres.next() {
+                            class.push(ch);
+                        } else {
+                            return None;    
+                        }
+                    }
+                    let clase = RegexClass::new(class.as_str());
+                    if let Some(clase_encontrada) = clase {
+                        return Some(RegexStep::new(RegexValue::Clase(clase_encontrada), RegexRep::Exact(1)));
+                    } else {
+                        return None;
+                    }
+                },
+                ',' => {}
+                _ => {
+                    opciones.push(p);
+                }
+            }
+        }
+        Some(RegexStep::new(RegexValue::Opcion(opciones), RegexRep::Exact(1)))
     }
 
     pub fn set_exact(&mut self, n: usize) -> &mut Self {

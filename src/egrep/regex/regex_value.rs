@@ -3,6 +3,7 @@ use super::regex_class::RegexClass;
 pub enum RegexValue {
     Literal(char),
     Comodin,
+    Opcion(Vec<char>),
     Clase(RegexClass),
 }
 
@@ -10,7 +11,6 @@ impl RegexValue {
     pub fn matches(&self, value: &str) -> usize {
         match self {
             RegexValue::Literal(l) => {
-                //dbg!(value.chars().next(), l);
                 match value.chars().next() {
                     Some(c) => {
                         if *l == c {
@@ -24,7 +24,6 @@ impl RegexValue {
             }
             RegexValue::Comodin => {
                 if let Some(c) = value.chars().next() {
-                    //dbg!(c);
                     c.len_utf8()
                 } else {
                     0
@@ -34,6 +33,18 @@ impl RegexValue {
                 match value.chars().next(){
                     Some(caracter) => {
                         if clase.contiene(caracter) {
+                            caracter.len_utf8()
+                        } else {
+                            0
+                        }
+                    }
+                    None => 0,
+                }
+            },
+            RegexValue::Opcion(opciones) => {
+                match value.chars().next(){
+                    Some(caracter) => {
+                        if opciones.contains(&caracter) {
                             caracter.len_utf8()
                         } else {
                             0

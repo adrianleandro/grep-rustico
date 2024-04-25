@@ -13,4 +13,6 @@ el caracter 1 no es un simbolo si no que es un numero
 en un proyecto nuevo de rust se genera un programa que imprime hola mundo por la pantalla principal
 en un proyecto nuevo de rust se genera un programa que imprime hola4mundo por la pantalla principal
 La notacion PascalCase combina las palabras directamente
+el caracter k es alfanumerico y alfabetico
+el caracter 2 es alfanumerico pero no alfabetico
 es el fin
