@@ -193,4 +193,25 @@ mod tests {
         assert_eq!(resultado.len(), 1);
         assert_eq!(resultado[0], "prueba de opciones o\n");
     }
+
+    #[test]
+    fn operador_empezar_desde_principio() {
+        let resultado = buscar("^frutas:", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 1);
+        assert_eq!(resultado[0], "frutas: banana anana mango\n");
+    }
+
+    #[test]
+    fn operador_empezar_desde_fin() {
+        let resultado = buscar("fin$", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 1);
+        assert_eq!(resultado[0], "es el fin");
+    }
+
+    #[test]
+    fn operador_desde_principio_a_fin() {
+        let resultado = buscar("^es el fin$", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 1);
+        assert_eq!(resultado[0], "es el fin");
+    }
 }

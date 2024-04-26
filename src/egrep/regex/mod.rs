@@ -8,6 +8,7 @@ mod regex_value;
 #[derive(Debug)]
 pub struct Regex {
     steps: Vec<regex_step::RegexStep>,
+    evaluar_desde_principio: bool,
     evaluar_desde_final: bool,
 }
 
@@ -19,6 +20,7 @@ impl Regex {
         }
 
         let mut steps: Vec<regex_step::RegexStep> = Vec::new();
+        let mut evaluar_desde_principio = false;
         let mut evaluar_desde_final = false;
 
         let mut iterador_caracteres = expression.chars().peekable();
@@ -26,14 +28,11 @@ impl Regex {
         while let Some(c) = iterador_caracteres.next() {
             let step = match c {
                 '.' => Some(RegexStep::new(RegexValue::Comodin, RegexRep::Exact(1))),
-                'a'..='z' | '0'..='9' | ' ' => {
-                    Some(RegexStep::new(RegexValue::Literal(c), RegexRep::Exact(1)))
-                }
                 '^' => {
                     if steps.last_mut().is_some() {
                         return Err("Se encontró un caracter '^' inesperado");
                     }
-                    evaluar_desde_final = false;
+                    evaluar_desde_principio = true;
                     None
                 },
                 '$' => {
@@ -131,6 +130,9 @@ impl Regex {
                     }
                     RegexStep::new_bracket_expression(contenido)
                 }
+                ' '..='~' => {
+                    Some(RegexStep::new(RegexValue::Literal(c), RegexRep::Exact(1)))
+                }
                 _ => return Err("Se encontró un caracter inesperado"),
             };
             if let Some(p) = step {
@@ -140,7 +142,7 @@ impl Regex {
         if evaluar_desde_final {
             steps.reverse()
         }
-        Ok(Regex { steps, evaluar_desde_final })
+        Ok(Regex { steps, evaluar_desde_principio, evaluar_desde_final })
     }
 
     /// Recibe una linea de texto y la evalua según la expresión regular.  
@@ -224,6 +226,9 @@ impl Regex {
                     }
                 }
                 if !step_cumplido {
+                    if self.evaluar_desde_principio {
+                        return Ok((0,0));
+                    }
                     index = comienzo_match + 1;
                     break;
                 }
