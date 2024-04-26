@@ -33,7 +33,10 @@ mod tests {
     fn comodin_y_asterisco() {
         let resultado = buscar("de.*fg", "tests/test.txt").unwrap();
         assert_eq!(resultado.len(), 1);
-        assert_eq!(resultado[0], "se prueba el patron con punto y asterisco: de44444fg\n");
+        assert_eq!(
+            resultado[0],
+            "se prueba el patron con punto y asterisco: de44444fg\n"
+        );
     }
 
     #[test]
@@ -128,9 +131,13 @@ mod tests {
 
     #[test]
     fn clase_alfanumerico() {
-        let resultado = buscar("el caracter [[:alnum:]] no es un simbolo", "tests/test.txt").unwrap();
+        let resultado =
+            buscar("el caracter [[:alnum:]] no es un simbolo", "tests/test.txt").unwrap();
         assert_eq!(resultado.len(), 1);
-        assert_eq!(resultado[0], "el caracter 1 no es un simbolo si no que es un numero\n");
+        assert_eq!(
+            resultado[0],
+            "el caracter 1 no es un simbolo si no que es un numero\n"
+        );
     }
 
     #[test]
@@ -139,7 +146,6 @@ mod tests {
         assert_eq!(resultado.len(), 1);
         assert_eq!(resultado[0], "hola321 mundo\n");
     }
-
 
     #[test]
     fn clase_puntuacion() {
@@ -150,43 +156,41 @@ mod tests {
 
     #[test]
     fn clases_upper_y_lower() {
-        let resultado = buscar("[[:upper:]][[:lower:]]+[[:upper:]][[:lower:]]+", "tests/test.txt").unwrap();
+        let resultado = buscar(
+            "[[:upper:]][[:lower:]]+[[:upper:]][[:lower:]]+",
+            "tests/test.txt",
+        )
+        .unwrap();
         assert_eq!(resultado.len(), 1);
         assert_eq!(
             resultado[0],
             "La notacion PascalCase combina las palabras directamente\n"
         );
     }
-    
+
     #[test]
     fn varias_clases_con_operadores() {
         let resultado = buscar("[[:upper:]]+[[:space:]]*[[:upper:]]+", "tests/test.txt").unwrap();
         assert_eq!(resultado.len(), 2);
         assert_eq!(resultado[0], "HOLA MUNDO\n");
-        assert_eq!(
-            resultado[1],
-            "CHAU MUNDO\n"
-        );
+        assert_eq!(resultado[1], "CHAU MUNDO\n");
     }
-    
+
     #[test]
     fn excluir_clase() {
         let resultado = buscar("hola[^[:space:]]mundo", "tests/test.txt").unwrap();
         assert_eq!(resultado.len(), 1);
         assert_eq!(resultado[0], "en un proyecto nuevo de rust se genera un programa que imprime hola4mundo por la pantalla principal\n");
     }
-    
+
     #[test]
     fn opciones_incluidas() {
         let resultado = buscar("opciones [ab]", "tests/test.txt").unwrap();
         assert_eq!(resultado.len(), 2);
         assert_eq!(resultado[0], "prueba de opciones a\n");
-        assert_eq!(
-            resultado[1],
-            "prueba de opciones b\n"
-        );
+        assert_eq!(resultado[1], "prueba de opciones b\n");
     }
-    
+
     #[test]
     fn opciones_excluidas() {
         let resultado = buscar("opciones [^ab]", "tests/test.txt").unwrap();

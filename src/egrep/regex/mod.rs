@@ -34,14 +34,14 @@ impl Regex {
                     }
                     evaluar_desde_principio = true;
                     None
-                },
+                }
                 '$' => {
-                    if iterador_caracteres.peek().is_some()  {
+                    if iterador_caracteres.peek().is_some() {
                         return Err("Se encontró un caracter '$' inesperado");
                     }
                     evaluar_desde_final = true;
                     None
-                },
+                }
                 '*' => {
                     if let Some(last) = steps.last_mut() {
                         last.set_any();
@@ -130,9 +130,7 @@ impl Regex {
                     }
                     RegexStep::new_bracket_expression(contenido)
                 }
-                ' '..='~' => {
-                    Some(RegexStep::new(RegexValue::Literal(c), RegexRep::Exact(1)))
-                }
+                ' '..='~' => Some(RegexStep::new(RegexValue::Literal(c), RegexRep::Exact(1))),
                 _ => return Err("Se encontró un caracter inesperado"),
             };
             if let Some(p) = step {
@@ -142,7 +140,11 @@ impl Regex {
         if evaluar_desde_final {
             steps.reverse()
         }
-        Ok(Regex { steps, evaluar_desde_principio, evaluar_desde_final })
+        Ok(Regex {
+            steps,
+            evaluar_desde_principio,
+            evaluar_desde_final,
+        })
     }
 
     /// Recibe una linea de texto y la evalua según la expresión regular.  
@@ -227,7 +229,7 @@ impl Regex {
                 }
                 if !step_cumplido {
                     if self.evaluar_desde_principio {
-                        return Ok((0,0));
+                        return Ok((0, 0));
                     }
                     index = comienzo_match + 1;
                     break;

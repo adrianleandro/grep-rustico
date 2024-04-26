@@ -37,9 +37,7 @@ impl RegexStep {
                     }
                 }
                 ',' => {}
-                '^' => {
-                    excluir = true
-                }
+                '^' => excluir = true,
                 _ => {
                     opciones.push(p);
                 }
