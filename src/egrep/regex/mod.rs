@@ -35,14 +35,14 @@ impl Regex {
                     }
                     evaluar_desde_final = false;
                     None
-                }
+                },
                 '$' => {
-                    if iterador_caracteres.peek().is_some() {
+                    if iterador_caracteres.peek().is_some()  {
                         return Err("Se encontró un caracter '$' inesperado");
                     }
                     evaluar_desde_final = true;
                     None
-                }
+                },
                 '*' => {
                     if let Some(last) = steps.last_mut() {
                         last.set_any();
@@ -140,10 +140,7 @@ impl Regex {
         if evaluar_desde_final {
             steps.reverse()
         }
-        Ok(Regex {
-            steps,
-            evaluar_desde_final,
-        })
+        Ok(Regex { steps, evaluar_desde_final })
     }
 
     /// Recibe una linea de texto y la evalua según la expresión regular.  

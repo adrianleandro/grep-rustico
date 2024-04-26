@@ -15,4 +15,10 @@ en un proyecto nuevo de rust se genera un programa que imprime hola4mundo por la
 La notacion PascalCase combina las palabras directamente
 el caracter k es alfanumerico y alfabetico
 el caracter 2 es alfanumerico pero no alfabetico
+HOLA MUNDO
+CHAU MUNDO
+prueba de opciones o
+prueba de opciones a
+prueba de opciones b
+frutas: banana anana mango
 es el fin

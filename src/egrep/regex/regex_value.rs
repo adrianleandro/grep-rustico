@@ -3,8 +3,8 @@ use super::regex_class::RegexClass;
 pub enum RegexValue {
     Literal(char),
     Comodin,
-    Opcion(Vec<char>),
-    Clase(RegexClass),
+    Opcion(Vec<char>, bool),
+    Clase(RegexClass, bool),
 }
 
 impl RegexValue {
@@ -27,9 +27,15 @@ impl RegexValue {
                     0
                 }
             }
-            RegexValue::Clase(clase) => match value.chars().next() {
+            RegexValue::Clase(clase, excluir) => match value.chars().next() {
                 Some(caracter) => {
-                    if clase.contiene(caracter) {
+                    if *excluir {
+                        if clase.contiene(caracter) {
+                            0
+                        } else {
+                            caracter.len_utf8()
+                        }
+                    } else if clase.contiene(caracter) {
                         caracter.len_utf8()
                     } else {
                         0
@@ -37,9 +43,15 @@ impl RegexValue {
                 }
                 None => 0,
             },
-            RegexValue::Opcion(opciones) => match value.chars().next() {
+            RegexValue::Opcion(opciones, excluir) => match value.chars().next() {
                 Some(caracter) => {
-                    if opciones.contains(&caracter) {
+                    if *excluir {
+                        if opciones.contains(&caracter) {
+                            0
+                        } else {
+                            caracter.len_utf8()
+                        }
+                    } else if opciones.contains(&caracter) {
                         caracter.len_utf8()
                     } else {
                         0

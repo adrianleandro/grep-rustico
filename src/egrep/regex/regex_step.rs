@@ -14,6 +14,7 @@ impl RegexStep {
     pub fn new_bracket_expression(expression: String) -> Option<Self> {
         let mut iterador_caracteres = expression.chars();
         let mut opciones: Vec<char> = Vec::new();
+        let mut excluir = false;
         while let Some(p) = iterador_caracteres.next() {
             match p {
                 '[' => {
@@ -28,7 +29,7 @@ impl RegexStep {
                     let clase = RegexClass::new(class.as_str());
                     if let Some(clase_encontrada) = clase {
                         return Some(RegexStep::new(
-                            RegexValue::Clase(clase_encontrada),
+                            RegexValue::Clase(clase_encontrada, excluir),
                             RegexRep::Exact(1),
                         ));
                     } else {
@@ -36,13 +37,16 @@ impl RegexStep {
                     }
                 }
                 ',' => {}
+                '^' => {
+                    excluir = true
+                }
                 _ => {
                     opciones.push(p);
                 }
             }
         }
         Some(RegexStep::new(
-            RegexValue::Opcion(opciones),
+            RegexValue::Opcion(opciones, excluir),
             RegexRep::Exact(1),
         ))
     }
