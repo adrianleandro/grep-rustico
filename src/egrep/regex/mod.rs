@@ -8,6 +8,7 @@ mod regex_value;
 #[derive(Debug)]
 pub struct Regex {
     steps: Vec<regex_step::RegexStep>,
+    evaluar_desde_final: bool,
 }
 
 impl Regex {
@@ -18,6 +19,7 @@ impl Regex {
         }
 
         let mut steps: Vec<regex_step::RegexStep> = Vec::new();
+        let mut evaluar_desde_final = false;
 
         let mut iterador_caracteres = expression.chars().peekable();
 
@@ -26,6 +28,20 @@ impl Regex {
                 '.' => Some(RegexStep::new(RegexValue::Comodin, RegexRep::Exact(1))),
                 'a'..='z' | '0'..='9' | ' ' => {
                     Some(RegexStep::new(RegexValue::Literal(c), RegexRep::Exact(1)))
+                }
+                '^' => {
+                    if steps.last_mut().is_some() {
+                        return Err("Se encontró un caracter '^' inesperado");
+                    }
+                    evaluar_desde_final = false;
+                    None
+                }
+                '$' => {
+                    if iterador_caracteres.peek().is_some() {
+                        return Err("Se encontró un caracter '$' inesperado");
+                    }
+                    evaluar_desde_final = true;
+                    None
                 }
                 '*' => {
                     if let Some(last) = steps.last_mut() {
@@ -121,7 +137,13 @@ impl Regex {
                 steps.push(p);
             }
         }
-        Ok(Regex { steps })
+        if evaluar_desde_final {
+            steps.reverse()
+        }
+        Ok(Regex {
+            steps,
+            evaluar_desde_final,
+        })
     }
 
     /// Recibe una linea de texto y la evalua según la expresión regular.  
@@ -134,6 +156,11 @@ impl Regex {
 
         let mut iter;
         let mut index = 0;
+
+        let mut value = value.to_string();
+        if self.evaluar_desde_final {
+            value = value.chars().rev().collect::<String>();
+        }
 
         while index < value.len() {
             iter = self.steps.iter().peekable();
@@ -204,7 +231,10 @@ impl Regex {
                     break;
                 }
                 if iter.peek().is_none() {
-                    return Ok((comienzo_match, index));
+                    match self.evaluar_desde_final {
+                        true => return Ok((value.len() - index, value.len() - comienzo_match)),
+                        false => return Ok((comienzo_match, index)),
+                    }
                 };
             }
         }
