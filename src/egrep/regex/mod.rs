@@ -236,16 +236,17 @@ impl Regex {
                 }
                 if iter.peek().is_none() {
                     match (self.evaluar_desde_principio, self.evaluar_desde_final) {
-                        (false, true) => return Ok((value.len() - index, value.len() - comienzo_match)),
-                        (true, false)|(false, false) => return Ok((comienzo_match, index)),
+                        (false, true) => {
+                            return Ok((value.len() - index, value.len() - comienzo_match))
+                        }
+                        (true, false) | (false, false) => return Ok((comienzo_match, index)),
                         (true, true) => {
                             if index == (value.len() - 1) {
                                 return Ok((comienzo_match, index));
                             } else {
-                                return Ok((0,0));
+                                return Ok((0, 0));
                             }
                         }
-
                     }
                 };
             }

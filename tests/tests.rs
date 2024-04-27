@@ -214,9 +214,16 @@ mod tests {
 
     #[test]
     fn operador_desde_principio_a_fin_matchea_linea_entera() {
-        let resultado = buscar("^el caracter 2 es alfanumerico pero no alfabetico$", "tests/test.txt").unwrap();
+        let resultado = buscar(
+            "^el caracter 2 es alfanumerico pero no alfabetico$",
+            "tests/test.txt",
+        )
+        .unwrap();
         assert_eq!(resultado.len(), 1);
-        assert_eq!(resultado[0], "el caracter 2 es alfanumerico pero no alfabetico\n");
+        assert_eq!(
+            resultado[0],
+            "el caracter 2 es alfanumerico pero no alfabetico\n"
+        );
     }
 
     #[test]
