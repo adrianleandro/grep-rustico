@@ -137,7 +137,7 @@ impl Regex {
                 steps.push(p);
             }
         }
-        if evaluar_desde_final {
+        if !evaluar_desde_principio && evaluar_desde_final {
             steps.reverse()
         }
         Ok(Regex {
@@ -152,14 +152,14 @@ impl Regex {
     /// Devuelve error en caso de que la linea de texto contenga algun carácter que no pertenezca al formato ASCII.  
     pub fn testear_linea(&self, value: &str) -> Result<(usize, usize), &str> {
         if !value.is_ascii() {
-            return Err("el input no es ASCII");
+            return Err("La linea leida no está en formato ASCII");
         }
 
         let mut iter;
         let mut index = 0;
 
         let mut value = value.to_string();
-        if self.evaluar_desde_final {
+        if self.evaluar_desde_final && !self.evaluar_desde_principio {
             value = value.chars().rev().collect::<String>();
         }
 
@@ -228,16 +228,24 @@ impl Regex {
                     }
                 }
                 if !step_cumplido {
-                    if self.evaluar_desde_principio {
+                    if self.evaluar_desde_principio && self.evaluar_desde_final {
                         return Ok((0, 0));
                     }
                     index = comienzo_match + 1;
                     break;
                 }
                 if iter.peek().is_none() {
-                    match self.evaluar_desde_final {
-                        true => return Ok((value.len() - index, value.len() - comienzo_match)),
-                        false => return Ok((comienzo_match, index)),
+                    match (self.evaluar_desde_principio, self.evaluar_desde_final) {
+                        (false, true) => return Ok((value.len() - index, value.len() - comienzo_match)),
+                        (true, false)|(false, false) => return Ok((comienzo_match, index)),
+                        (true, true) => {
+                            if index == (value.len() - 1) {
+                                return Ok((comienzo_match, index));
+                            } else {
+                                return Ok((0,0));
+                            }
+                        }
+
                     }
                 };
             }

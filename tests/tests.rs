@@ -213,9 +213,21 @@ mod tests {
     }
 
     #[test]
-    fn operador_desde_principio_a_fin() {
-        let resultado = buscar("^es el fin$", "tests/test.txt").unwrap();
+    fn operador_desde_principio_a_fin_matchea_linea_entera() {
+        let resultado = buscar("^el caracter 2 es alfanumerico pero no alfabetico$", "tests/test.txt").unwrap();
         assert_eq!(resultado.len(), 1);
-        assert_eq!(resultado[0], "es el fin");
+        assert_eq!(resultado[0], "el caracter 2 es alfanumerico pero no alfabetico\n");
+    }
+
+    #[test]
+    fn operador_desde_principio_a_fin_no_matchea_principio() {
+        let resultado = buscar("^mango$", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 0);
+    }
+
+    #[test]
+    fn operador_desde_principio_a_fin_no_matchea_fin() {
+        let resultado = buscar("^frutas:$", "tests/test.txt").unwrap();
+        assert_eq!(resultado.len(), 0);
     }
 }
