@@ -25,8 +25,8 @@ impl Regex {
 
         let mut iterador_caracteres = expression.chars().peekable();
 
-        while let Some(c) = iterador_caracteres.next() {
-            let step = match c {
+        while let Some(caracter_encontrado) = iterador_caracteres.next() {
+            let step = match caracter_encontrado {
                 '.' => Some(RegexStep::new(RegexValue::Comodin, RegexRep::Exact(1))),
                 '^' => {
                     if steps.last_mut().is_some() {
@@ -76,8 +76,8 @@ impl Regex {
                 '{' => {
                     let mut rango = String::new();
                     let mut nro_comas = 0;
-                    for p in iterador_caracteres.by_ref() {
-                        match p {
+                    for caracter_dentro_llaves in iterador_caracteres.by_ref() {
+                        match caracter_dentro_llaves {
                             '}' => {
                                 if rango.is_empty() {
                                     return Err("Contenido de operador {} invalido");
@@ -87,10 +87,10 @@ impl Regex {
                             }
                             ',' => {
                                 nro_comas += 1;
-                                rango.push(p);
+                                rango.push(caracter_dentro_llaves);
                             }
                             '0'..='9' => {
-                                rango.push(p);
+                                rango.push(caracter_dentro_llaves);
                             }
                             _ => {
                                 return Err(
@@ -102,8 +102,8 @@ impl Regex {
                             return Err("Contenido de operador {} invalido");
                         }
                     }
-                    if let Some(last) = steps.last_mut() {
-                        last.set_repeticiones_rango(rango);
+                    if let Some(ultimo_step) = steps.last_mut() {
+                        ultimo_step.set_repeticiones_rango(rango);
                     } else {
                         return Err("Se encontró un caracter '{' inesperado");
                     }
@@ -112,8 +112,8 @@ impl Regex {
                 '[' => {
                     let mut contenido = String::new();
                     let mut cantidad_corchetes = 1;
-                    for a in iterador_caracteres.by_ref() {
-                        match a {
+                    for caracter_dentro_corchetes in iterador_caracteres.by_ref() {
+                        match caracter_dentro_corchetes {
                             ']' => {
                                 cantidad_corchetes -= 1;
                                 if cantidad_corchetes == 0 {
@@ -123,18 +123,21 @@ impl Regex {
                             '[' => cantidad_corchetes += 1,
                             _ => {}
                         }
-                        contenido.push(a);
+                        contenido.push(caracter_dentro_corchetes);
                     }
                     if contenido.is_empty() || cantidad_corchetes > 0 {
                         return Err("Contenido de operador [] inválido");
                     }
                     RegexStep::new_bracket_expression(contenido)
                 }
-                ' '..='~' => Some(RegexStep::new(RegexValue::Literal(c), RegexRep::Exact(1))),
+                ' '..='~' => Some(RegexStep::new(
+                    RegexValue::Literal(caracter_encontrado),
+                    RegexRep::Exact(1),
+                )),
                 _ => return Err("Se encontró un caracter inesperado"),
             };
-            if let Some(p) = step {
-                steps.push(p);
+            if let Some(step_creado) = step {
+                steps.push(step_creado);
             }
         }
         if !evaluar_desde_principio && evaluar_desde_final {
@@ -169,8 +172,8 @@ impl Regex {
             while let Some(step) = iter.next() {
                 let mut step_cumplido = true;
                 match step.get_repetitions() {
-                    RegexRep::Exact(n) => {
-                        for _ in 1..=*n {
+                    RegexRep::Exact(cantidad) => {
+                        for _ in 1..=*cantidad {
                             let size = step.get_value().matches(&value[index..]);
                             if size == 0 {
                                 step_cumplido = false;

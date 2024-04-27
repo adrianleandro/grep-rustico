@@ -15,13 +15,13 @@ impl RegexStep {
         let mut iterador_caracteres = expression.chars();
         let mut opciones: Vec<char> = Vec::new();
         let mut excluir = false;
-        while let Some(p) = iterador_caracteres.next() {
-            match p {
+        while let Some(caracter_dentro_brackets) = iterador_caracteres.next() {
+            match caracter_dentro_brackets {
                 '[' => {
                     let mut class = String::new();
                     for _ in 0..7 {
-                        if let Some(ch) = iterador_caracteres.next() {
-                            class.push(ch);
+                        if let Some(caracter_clase) = iterador_caracteres.next() {
+                            class.push(caracter_clase);
                         } else {
                             return None;
                         }
@@ -39,7 +39,7 @@ impl RegexStep {
                 ',' => {}
                 '^' => excluir = true,
                 _ => {
-                    opciones.push(p);
+                    opciones.push(caracter_dentro_brackets);
                 }
             }
         }
@@ -64,9 +64,9 @@ impl RegexStep {
         let mut m: String = String::new();
         let mut target = &mut n;
         let mut es_exacto = true;
-        for c in rango.chars() {
-            match c {
-                '0'..='9' => target.push(c),
+        for caracter_dentro_rango in rango.chars() {
+            match caracter_dentro_rango {
+                '0'..='9' => target.push(caracter_dentro_rango),
                 ',' => {
                     es_exacto = false;
                     target = &mut m

@@ -10,10 +10,10 @@ pub enum RegexValue {
 impl RegexValue {
     pub fn matches(&self, value: &str) -> usize {
         match self {
-            RegexValue::Literal(l) => match value.chars().next() {
-                Some(c) => {
-                    if *l == c {
-                        l.len_utf8()
+            RegexValue::Literal(literal) => match value.chars().next() {
+                Some(caracter) => {
+                    if *literal == caracter {
+                        literal.len_utf8()
                     } else {
                         0
                     }
@@ -21,8 +21,8 @@ impl RegexValue {
                 None => 0,
             },
             RegexValue::Comodin => {
-                if let Some(c) = value.chars().next() {
-                    c.len_utf8()
+                if let Some(caracter) = value.chars().next() {
+                    caracter.len_utf8()
                 } else {
                     0
                 }

@@ -16,8 +16,8 @@ mod regex;
 pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a str> {
     let expresion_regular = match regex::Regex::new(reg_ex) {
         Ok(expresion_regular) => expresion_regular,
-        Err(e) => {
-            return Err(e);
+        Err(error_creacion_regex) => {
+            return Err(error_creacion_regex);
         }
     };
     let path = Path::new(archivo);
@@ -44,8 +44,8 @@ pub fn buscar<'a>(reg_ex: &'a str, archivo: &'a str) -> Result<Vec<String>, &'a 
             Ok(_) => {
                 match &expresion_regular.testear_linea(&linea_actual) {
                     Ok((0, 0)) => (),
-                    Ok((start, end)) => {
-                        resaltar(*start, *end, &linea_actual);
+                    Ok((inicio, fin)) => {
+                        resaltar(*inicio, *fin, &linea_actual);
                         ocurrencias.push(linea_actual.to_owned());
                     }
                     Err(e) => eprintln!("{e}"),
